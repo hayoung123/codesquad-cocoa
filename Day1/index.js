@@ -1,4 +1,5 @@
 //다각형 넓이 구하기
+let executionSequence = [];
 
 function getCircle(radius, maxRadius = radius) {
   //   if (arguments.length === 0) return console.log("need a radius");
@@ -43,7 +44,6 @@ function getArea(shape, num1, num2, num3) {
   }
 }
 
-let executionSequence = [];
 function printExecutionSequence() {
   console.log(`계산수행 : ${executionSequence.join(", ")}`);
 }
