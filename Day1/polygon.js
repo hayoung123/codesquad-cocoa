@@ -1,9 +1,8 @@
 //다각형 넓이 구하기
 let executionSequence = [];
 
+//원 넓이 구하기
 function getCircle(radius, maxRadius = radius) {
-  //   if (arguments.length === 0) return console.log("need a radius");
-  //   if (radius > maxRadius) return console.log("error");
   const PI = Math.PI;
   let sumArea = 0;
   while (radius <= maxRadius) {
@@ -11,28 +10,28 @@ function getCircle(radius, maxRadius = radius) {
     sumArea += area;
     radius++;
   }
-  executionSequence.push(`circle:${sumArea}`);
-  return console.log(`total circle area : ${sumArea}`);
+  console.log(`total circle area : ${sumArea}`);
+  saveSequence(`circle:${sumArea}`);
+  return sumArea;
 }
 
+//사각형 넓이 구하기
 function getRect(row, column) {
-  //   if (row === undefined || column === undefined)
-  //     return console.log("need row or column");
   const area = row * column;
   console.log(`rectangle area : ${area}`);
-  executionSequence.push(`rect:${area}`);
+  saveSequence(`rect:${area}`);
   return area;
 }
 
+//사다리꼴 넓이 구하기
 function getTrapezoid(upperRow, lowerRow, column) {
-  //   if (upperRow === undefined || lowerRow === undefined || column === undefined)
-  //     return console.log("need row or column");
   const area = ((upperRow + lowerRow) * column) / 2;
   console.log(`trapezoid area : ${area}`);
-  executionSequence.push(`trapezoid:${area}`);
+  saveSequence(`trapezoid:${area}`);
   return area;
 }
 
+//다각형 넓이 구하기
 function getArea(shape, num1, num2, num3) {
   if (shape === undefined) return console.log("need shape");
   if (shape === "circle") {
@@ -44,6 +43,12 @@ function getArea(shape, num1, num2, num3) {
   }
 }
 
+//계산 수행 함수 및 값 저장
+function saveSequence(str) {
+  executionSequence.push(str);
+}
+
+//계산 수행
 function printExecutionSequence() {
   console.log(`계산수행 : ${executionSequence.join(", ")}`);
 }

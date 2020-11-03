@@ -4,6 +4,7 @@
 
 - breakpoints는 코드 실행 중 내가 break 해보고 싶은 point.
 - vsc에서는 코드라인 왼쪽 공백을 클릭 or 코드라인 클릭후 F9하면 빨간색점으로 breakpoint가 설정된다.
+- 또는 코드에 `debugger`를 작성해 breakpoints를 설정 가능.
 - reakpoints를 설정하고 debugging하면 break된 상황에 local,global various, call stack들을 볼 수 있다.
 
 </br>
