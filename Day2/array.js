@@ -61,11 +61,10 @@ const solutionAvg = (grades) => {
 };
 
 const getAvg = (grades) => {
-  const avgGrades = grades.reduce((prev, current, idx) => {
-    if (idx === grades.length - 1) return (prev + current) / (idx + 1);
+  const avgGrades = grades.reduce((prev, current) => {
     return prev + current;
   }, 0);
-  return avgGrades;
+  return avgGrades / grades.length;
 };
 
 const getBestScoreArr = (grades) => {
