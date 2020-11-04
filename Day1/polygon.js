@@ -54,7 +54,7 @@ function printExecutionSequence() {
 }
 
 function init() {
-  getCircle();
+  getCircle(1, 3);
   getArea("circle", 10);
   getArea("rect", 10, 15);
   getArea("trapezoid", 10, 15, 12);
