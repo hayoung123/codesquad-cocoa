@@ -17,7 +17,6 @@ const factorial = (num) => {
 // calculate(4)
 
 // 2. 배열 거르기
-
 //for/while문 version
 const peoples = ["crong!@#", "honux5", "sarah#", "hea3d", "zello", "5lucas"];
 
@@ -47,7 +46,6 @@ const filterId2 = (peoples) => {
 // filterId2(peoples);
 
 //3. 평균 구하기
-
 const grades = [
   [88, 76, 77],
   [33, 44, 44],
@@ -77,21 +75,25 @@ const getBestScoreArr = (grades) => {
 // solutionAvg(grades);
 
 //4. 배열 만들기
+const dataO = data.dataO;
+
 const getNumData = (obj) => {
   let result = [];
-  for (let x in obj) {
-    for (let i in obj[x]) {
-      if (typeof obj[x][i] === "number") result.push(i);
+  const keys = Object.keys(obj);
+  keys.forEach((data) => {
+    if (typeof obj[data] === "number") result.push(data);
+    else {
+      for (let i in obj[data]) {
+        if (typeof obj[data][i] === "number") result.push(i);
+      }
     }
-  }
+  });
   console.log(result);
 };
-const dataO = data.dataO;
 
 getNumData(dataO);
 
 //5.배열 결과 출력
-
 const dataTree = data.dataTree;
 
 const typeCheck = (data, name = []) => {
@@ -108,7 +110,6 @@ const typeCheck = (data, name = []) => {
 // console.log(nameArr);
 
 //6. reduce 만들기
-
 const myReduce = (arr, callback, initialValue) => {
   let prev;
   if (!initialValue) {

@@ -4,9 +4,9 @@ map, set은 ES6에서 새로 도입한 자료구조
 
 ### Set,Map이 필요한이유
 
-- object는 문자열/심볼 만 key 값으로 들어간다.
+- object는 문자열/심볼 만 key 값으로 들어간다. (map,set은 1와 '1'도 구분된다.)
 - 객체의 프로퍼티의 개수를 알아야할경우 (set,map -> size)
-- object는 for of 또는 spread syntax로 접근이 힘들다.
+- object는 for of 또는 spread syntax로 접근이 힘들다. (object는 not iterable)
 
 ## Set
 
@@ -124,3 +124,43 @@ Array메소드 중 `map`, `filter`, `reduce`가 고차합수입니다.
 즉, 함수를 반환하는 고차함수가 어떻게 메서드 체이닝이 가능한가를 물어보는건가?
 
 //나중에 더알아보자
+
+---
+
+# 객체 탐색
+
+### Object.keys() 와 forEach로 탐색
+
+`Object.keys()`로 키를 구한다음 forEach로 object에 접근했을 때,
+값을 변경할 수 있다.
+
+```javascript
+let a = { name: "kyle", age: 26, city: "seoul" };
+
+const keys = Object.keys(a);
+
+console.log(keys); //[ 'name', 'age', 'city' ]
+
+keys.forEach((key) => (a[key] = "hello"));
+keys.forEach((key) => console.log(a[key])); //'hello'  'hello'  'hello'
+```
+
+---
+
+## Array.prototype.filter
+
+> arr.filter(callback(element[,index[,array]])[,thisArg])
+
+- filter는 `callback`함수에서 `boolean`을 return해야한다.
+- 따로 함수를 만들어서 넣으면 보기 좋더라
+
+```javascript
+function isOdd(num) {
+  return num % 2;
+}
+
+let a = [1, 2, 3, 4, 5, 6, 7];
+a = a.filter(isOdd);
+
+console.log(a); //[1,3,5,7]
+```
