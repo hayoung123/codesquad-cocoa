@@ -1,3 +1,7 @@
+## Map,set / 고차함수 / 객체 탐색 / filter / class
+
+---
+
 # Map vs Set
 
 map, set은 ES6에서 새로 도입한 자료구조
@@ -164,3 +168,83 @@ a = a.filter(isOdd);
 
 console.log(a); //[1,3,5,7]
 ```
+
+---
+
+# JavaScript ES6의 class
+
+- 함수 선언과 클래스 선언의 가장 큰 차이는 호이스팅입니다.
+
+  > 함수의 경우 -> 호이스팅 발생 -> 호출보다 아래에 선언해도 문제 없음
+  >
+  > 클래스 -> 호이스팅 X -> 클래스를 사용하기 전에 선언해야 한다.
+  >
+  > [poiemaweb](https://poiemaweb.com/es6-class) 에서는 호이스팅 된다고하고 예제를 보면 되는것같긴하다 근데 잘모르곘다.
+
+```javascript
+const p = new Rectangle(); // ReferenceError
+
+class Rectangle {}
+```
+
+## Class 표현식
+
+- class내부의 class 는 그 클래스 아래의 예시에서는 Person을 가르킨다.
+- class역시 함수이므로 함수 메소드 name을 사용할 수 있다.
+- constructor은 1번만 선언가능하다.
+
+```javascript
+class Person {
+  constructor(name, city) {
+    this.name = name;
+    this.city = city;
+  }
+  sayHello = (name) => console.log(`hello! ${name}`);
+  printThis = () => console.log(this);
+}
+
+const kyle = new Person("kyle", " seoul");
+console.log(kyle.name); //kyle
+console.log(kyle.printThis()); //Person{...} undefined(printThis return없기 때문)
+```
+
+## class body
+
+- class body는 {}로 묶인 부분
+- class body에서 constructor, method 과 같은 class members를 정의
+
+## class 상속
+
+- extends 와 super로 상속할 수 있다.
+- constructor도 상속 가능하다.
+
+```javascript
+class Animal {
+  constructor(name) {
+    this.name = name;
+  }
+  bark() {
+    console.log(`${this.name} : wall!wall!wall!`);
+  }
+}
+
+class Dog extends Animal {
+  constructor(name, age) {
+    super(name);
+    this.age = age;
+  }
+  introduce() {
+    console.log(`My name is ${this.name}`);
+    console.log(`I'm ${this.age} years old!`);
+  }
+  bark() {
+    super.bark();
+  }
+}
+
+const dungii = new Dog("dungii", 7);
+dungii.introduce();
+dungii.bark();
+```
+
+출처 : [MDN class](https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Classes)

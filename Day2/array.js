@@ -3,22 +3,36 @@ const data = require("./data");
 // 1. factorial 함수
 const calculate = (num) => {
   let result = [];
+  const fac = memoize(factorial);
   for (let i = 1; i <= num; i++) {
-    result.push(factorial(i));
+    let tmp = fac(i);
+    result.push(tmp);
   }
   console.log(result);
 };
 
+const memoize = (fn) => {
+  let cache = {};
+  return function (args) {
+    if (cache[args]) return cache[args];
+    else {
+      const result = fn(args);
+      cache[args] = result;
+      return result;
+    }
+  };
+};
+
 const factorial = (num) => {
-  if (num === 1) return 1;
+  if (num === 1) return num;
   else return num * factorial(num - 1);
 };
 
-// calculate(4)
+// calculate(4);
 
 // 2. 배열 거르기
 //for/while문 version
-const peoples = ["crong!@#", "honux5", "sarah#", "hea3d", "zello", "5lucas"];
+const peoples = ["crong!@#", "h2onux5", "sarah#", "hea3d", "zello", "5lucas"];
 
 const filterId = (peoples) => {
   const reg = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
@@ -39,11 +53,11 @@ const filterId2 = (peoples) => {
   const reg = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
   let result = [];
   peoples = peoples.filter((person) => person.match(reg) === null);
-  result = peoples.map((person) => person.replace(/[0-9]/, ""));
+  result = peoples.map((person) => person.replace(/[0-9]/g, ""));
   console.log(result);
 };
 
-// filterId2(peoples);
+filterId2(peoples);
 
 //3. 평균 구하기
 const grades = [
@@ -54,7 +68,7 @@ const grades = [
 ];
 
 const solutionAvg = (grades) => {
-  let studentAvg = grades.map((item) => getAvg(item));
+  const studentAvg = grades.map((item) => getAvg(item));
   const bestScoreArr = getBestScoreArr(grades);
   const bestScoreAvg = getAvg(bestScoreArr);
   console.log(studentAvg, bestScoreAvg);
@@ -81,7 +95,7 @@ const getNumData = (obj) => {
   const keys = Object.keys(obj);
   keys.forEach((data) => {
     if (typeof obj[data] === "number") result.push(data);
-    else {
+    else if (typeof obj[data] === "object") {
       for (let i in obj[data]) {
         if (typeof obj[data][i] === "number") result.push(i);
       }
@@ -90,7 +104,7 @@ const getNumData = (obj) => {
   console.log(result);
 };
 
-getNumData(dataO);
+// getNumData(dataO);
 
 //5.배열 결과 출력
 const dataTree = data.dataTree;

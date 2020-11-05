@@ -4,7 +4,7 @@ const notation = (num, devideNum) => {
 
 //순서 배열 함수
 const fillArr = (len, num) => {
-  let arr = new Array(len).fill(0);
+  let arr = new Array(len).fill(0); //fill 빼고 test
   arr = arr.map((_, idx) => (idx % num) + 1);
   return arr;
 };
@@ -20,15 +20,16 @@ const solution = (devideNum, max, people) => {
 };
 
 //길동 게임
-const notationTurnGame = (devideNum, max, people, gildong) => {
+const notationTurnGame = (devideNum, max, people, myTurn) => {
   let result = [];
   let everyArr = solution(devideNum, max, people);
   let turn = fillArr(everyArr.length, people);
   everyArr.forEach((item, idx) => {
-    if (turn[idx] === gildong) result.push(item);
+    if (turn[idx] === myTurn) result.push(item);
   });
   return result;
 };
+
 let gildong = notationTurnGame(16, 16, 2, 1);
 
 console.log(gildong);
