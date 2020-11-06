@@ -1,0 +1,14 @@
+{
+  "name": "day3",
+  "version": "1.0.0",
+  "description": "- 1000\r - 1008\r - 2438\r - 2920\r - 8958\r - 11654",
+  "main": "baekjoon.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "lodash": "^4.17.20"
+  }
+}
