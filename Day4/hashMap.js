@@ -97,7 +97,7 @@ class HashTable {
   }
   clear() {
     this.allKeys = [];
-    this.data = null;
+    this.data = {};
   }
 }
 
@@ -121,5 +121,7 @@ a.replace("kyle", "welcome");
 // console.log(a.size());
 // console.log(a.isEmpty());
 a.clear();
+console.log(a);
+a.put("kyle", "hello");
 console.log(a);
 // console.log(a.isEmpty());
