@@ -100,3 +100,26 @@ class HashTable {
     this.data = null;
   }
 }
+
+let a = new HashTable();
+a.put("kyle", "hello");
+a.put("cho", "possible");
+a.put("cho", "possible1");
+a.put("ohc", "cho reverse");
+a.put("song", "song");
+console.log(a.data);
+a.remove("ohc");
+console.log(a.keys());
+const flag = a.containsKey("kyle");
+console.log(flag);
+console.log(a.get("kyle"));
+console.log(a.get("kyl"));
+a.replace("kyle", "welcome");
+// console.log(a.findNode("kyle"));
+// console.log(a.keys());
+// console.log(a.keys());
+// console.log(a.size());
+// console.log(a.isEmpty());
+a.clear();
+console.log(a);
+// console.log(a.isEmpty());
