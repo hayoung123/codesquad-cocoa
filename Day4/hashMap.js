@@ -7,7 +7,7 @@ class Node {
 class HashTable {
   constructor() {
     this.allKeys = [];
-    this.hashKeys = {};
+    this.data = {};
   }
   hash(str) {
     const hashKey = str
@@ -16,8 +16,8 @@ class HashTable {
     return hashKey % 10;
   }
   findNode(stringKey) {
-    for (let x of Object.keys(this.hashKeys)) {
-      let node = this.hashKeys[x];
+    for (let x of Object.keys(this.data)) {
+      let node = this.data[x];
       while (node) {
         if (node.key === stringKey) return node;
         node = node.next;
@@ -32,19 +32,19 @@ class HashTable {
       this.replace(key, value);
       return;
     }
-    if (!this.hashKeys[hashKey]) {
+    if (!this.data[hashKey]) {
       let data = new Node(key, value);
-      this.hashKeys[hashKey] = new Node(hashKey, null, data);
+      this.data[hashKey] = new Node(hashKey, null, data);
     } else {
-      let data = new Node(key, value, this.hashKeys[hashKey].next);
-      this.hashKeys[hashKey].next = data;
+      let data = new Node(key, value, this.data[hashKey].next);
+      this.data[hashKey].next = data;
     }
   }
 
   remove(stringKey) {
-    for (let x of Object.keys(this.hashKeys)) {
-      let prenode = this.hashKeys[x];
-      let node = this.hashKeys[x].next;
+    for (let x of Object.keys(this.data)) {
+      let prenode = this.data[x];
+      let node = this.data[x].next;
       while (prenode && node) {
         if (node.key === stringKey) {
           if (node.next) {
@@ -76,15 +76,15 @@ class HashTable {
     }
   }
   isEmpty() {
-    if (this.hashKeys) return true;
+    if (this.data) return true;
     else return false;
   }
   keys() {
     this.allKeys = [];
-    for (let x of Object.keys(this.hashKeys)) {
-      let node = this.hashKeys[x];
+    for (let x of Object.keys(this.data)) {
+      let node = this.data[x];
       while (node) {
-        if (node !== this.hashKeys[x]) this.allKeys.push(node.key);
+        if (node !== this.data[x]) this.allKeys.push(node.key);
         node = node.next;
       }
     }
@@ -97,28 +97,6 @@ class HashTable {
   }
   clear() {
     this.allKeys = [];
-    this.hashKeys = null;
+    this.data = null;
   }
 }
-let a = new HashTable();
-a.put("kyle", "hello");
-a.put("cho", "possible");
-// a.put("cho", "possible1");
-// a.put("ohc", "cho reverse");
-// a.put("song", "song");
-// console.log(a.hashKeys);
-// a.remove("ohc");
-// console.log(a.keys());
-// const flag = a.containsKey("kyle");
-// console.log(flag);
-// console.log(a.get("kyle"));
-// console.log(a.get("kyl"));
-a.replace("kyle", "welcome");
-// console.log(a.findNode("kyle"));
-// console.log(a.keys());
-// console.log(a.keys());
-// console.log(a.size());
-// console.log(a.isEmpty());
-// a.clear();
-console.log(a.hashKeys);
-// console.log(a.isEmpty());

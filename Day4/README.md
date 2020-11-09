@@ -77,32 +77,3 @@ linked list에도 2가지 방법이 존재
 https://evan-moon.github.io/2019/06/25/hashtable-with-js/
 
 https://preamtree.tistory.com/20#:~:text=%EA%B0%9C%EB%B0%A9%20%EC%A3%BC%EC%86%8C%EB%B2%95(Open%20Addressing,%EC%A3%BC%EC%86%8C%EA%B0%92%EC%9D%80%20%EB%B0%94%EB%80%8C%EC%A7%80%20%EC%95%8A%EB%8A%94%EB%8B%A4.
-
----
-
-해시맵 구현
-
-- put -> 해쉬함수 돌려서 거기에 넣는거지 하지만 이미 값이 있으면 linked로 연결하기
-
-linked를 먼저해야되나??
-
-- remove 해당키를 찾아서 없애야지
-
-근데 맨 위, 아래 있으면 node null이라던가 해서 없애면되는데 이게 linked list 를 먼저 구현해야되나?
-
-- contains key
-  찾아야지 해쉬 돌려서 찾고 거기서 linked 들어가면서 찾는데 이거 재귀? 일듯 node : null일 때 까지 도는 재귀
-
-- get(String)
-
-  이것도 string 해쉬 돌려서 string하고 key 비교하는 재귀일듯
-
-- isEmpty() 는 음그냥 length 맵이면 size해서 0이면 하면될듯
-- key는 전체 키목록이니까 전체 재귀 돌아서 배열에 넣어야 겠지?
-
-- replace(String key, String value) 는 obj.replace(key,value) 같은 식이면 음,, 그냥 바꿀 수 있겠지?? 생각에는 아마 될듯?
-
-- size는 전체 아이템이기 때문에 재귀 돌면서 개수 세야 될듯 아마 linked list로 할거이기 때문에 어쩔 수없다.
-
-- clear는 각 bin의 head를 null로 바꿔버리면 될듯
--
