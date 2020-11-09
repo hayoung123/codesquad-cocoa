@@ -7,6 +7,7 @@ const typeCheck = (data, name = []) => {
   else {
     for (let i in data) {
       if (data[i].type === "sk") name.push(data[i].name);
+      console.log(data[i]);
       typeCheck(data[i].childnode, name);
     }
   }

@@ -1,35 +1,33 @@
-// let b = [1, 2, 3, 4, 5];
+function makePermutations(data, length) {
+  let current = new Array(length);
+  let used = new Array(length);
+  let seen = {};
+  let result = [];
+  function permute(pos) {
+    if (pos == length) {
+      // Do we have a complete combination?
+      if (!seen[current]) {
+        // Check whether we've seen it before.
+        seen[current] = true; // If not, save it.
+        result.push(current.slice());
+      }
+      return;
+    }
+    for (var i = 0; i < data.length; ++i) {
+      if (!used[i]) {
+        // Have we used this element before?
+        used[i] = true; // If not, insert it and recurse.
+        current[pos] = data[i];
+        permute(pos + 1);
+        used[i] = false; // Reset after the recursive call.
+      }
+    }
+  }
+  permute(0);
+  return result;
+}
 
-// function des(arr) {
-//   return arr.sort((a, b) => b - a);
-// }
-
-// console.log(b);
-// console.log(des(b));
-// console.log(b === des(b));
-
-// const newB = b;
-// // const newB = JSON.stringify(b);
-// const newDesB = des(b);
-// console.log(newB);
-// console.log(newDesB);
-// console.log(newB === newDesB);
-
-const lodash = require("lodash");
-
-let originalArray = [37, 3700, { hello: "world" }];
-console.log("Original array:", ...originalArray); // 37 3700 Object { hello: "world" }
-
-let shallowCopiedArray = lodash.clone(originalArray);
-let deepCopiedArray = lodash.cloneDeep(originalArray);
-
-originalArray[1] = 0; // Will affect the original only
-console.log(`originalArray[1] = 0 // Will affect the original only`);
-originalArray[2].hello = "moon"; // Will affect the original and the shallow copy
-console.log(
-  `originalArray[2].hello = "moon" // Will affect the original array and the shallow copy`
-);
-
-console.log("Original array:", ...originalArray); // 37 0 Object { hello: "moon" }
-console.log("Shallow copy:", ...shallowCopiedArray); // 37 3700 Object { hello: "moon" }
-console.log("Deep copy:", ...deepCopiedArray); // 37 3700 Object { hello: "world" }
+var permutations = makePermutations(["1", "2", "3", "4"], 3);
+for (var i = 0; i < permutations.length; ++i) {
+  console.log("[" + permutations[i].join(", ") + "]");
+}
