@@ -1,13 +1,14 @@
 class HashMap {
-  constructor() {
+  constructor(size = 10) {
     this.allKeys = [];
     this.data = {};
+    this.size = size;
   }
   hash(str) {
     const hashKey = str
       .split("")
       .reduce((acc, curr) => acc + curr.charCodeAt(), 0);
-    return hashKey % 10;
+    return hashKey % this.size;
   }
 
   findNode(key) {
