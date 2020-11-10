@@ -42,19 +42,18 @@ class HashTable {
   }
 
   remove(stringKey) {
-    for (let x of Object.keys(this.data)) {
-      let prenode = this.data[x];
-      let node = this.data[x].next;
-      while (prenode && node) {
-        if (node.key === stringKey) {
-          if (node.next) {
-            prenode.next = node.next;
-            return;
-          } else prenode.next = null;
-        }
-        prenode = node;
-        node = node.next;
+    const hashKey = this.hash(stringKey);
+    let prenode = this.data[hashKey];
+    let node = this.data[hashKey].next;
+    while (prenode && node) {
+      if (node.key === stringKey) {
+        if (node.next) {
+          prenode.next = node.next;
+          return;
+        } else prenode.next = null;
       }
+      prenode = node;
+      node = node.next;
     }
   }
 

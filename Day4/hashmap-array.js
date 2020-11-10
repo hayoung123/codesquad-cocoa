@@ -32,11 +32,10 @@ class HashMap {
     }
   }
   remove(key) {
-    for (let x of Object.keys(this.data)) {
-      for (let i = 0; i < this.data[x].length; i++) {
-        if (this.data[x][i][0] === key) {
-          this.data[x].splice(i, 1);
-        }
+    const hashKey = this.hash(key);
+    for (let i = 0; i < this.data[hashKey].length; i++) {
+      if (this.data[hashKey][i][0] === key) {
+        this.data[hashKey].splice(i, 1);
       }
     }
     return false;
