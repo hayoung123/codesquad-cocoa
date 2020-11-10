@@ -55,6 +55,7 @@ class HashTable {
       prenode = node;
       node = node.next;
     }
+    if (!this.data[hashKey].next) delete this.data[hashKey];
   }
 
   containsKey(stringKey) {
@@ -75,7 +76,7 @@ class HashTable {
     }
   }
   isEmpty() {
-    if (this.data) return true;
+    if (Object.keys(this.data).length === 0) return true;
     else return false;
   }
   keys() {
@@ -102,25 +103,30 @@ class HashTable {
 
 let a = new HashTable();
 a.put("kyle", "hello");
-a.put("cho", "possible");
-a.put("cho", "possible1");
-a.put("ohc", "cho reverse");
-a.put("song", "song");
 console.log(a.data);
-a.remove("ohc");
-console.log(a.keys());
-const flag = a.containsKey("kyle");
-console.log(flag);
-console.log(a.get("kyle"));
-console.log(a.get("kyl"));
-a.replace("kyle", "welcome");
+console.log(a.isEmpty());
+a.remove("kyle");
+console.log(a.data);
+console.log(a.isEmpty());
+
+// a.put("cho", "possible");
+// a.put("cho", "possible1");
+// a.put("ohc", "cho reverse");
+// a.put("song", "song");
+// a.remove("ohc");
+// console.log(a.keys());
+// const flag = a.containsKey("kyle");
+// console.log(flag);
+// console.log(a.get("kyle"));
+// console.log(a.get("kyl"));
+// a.replace("kyle", "welcome");
 // console.log(a.findNode("kyle"));
 // console.log(a.keys());
 // console.log(a.keys());
 // console.log(a.size());
 // console.log(a.isEmpty());
-a.clear();
-console.log(a);
-a.put("kyle", "hello");
-console.log(a.data);
+// a.clear();
+// console.log(a);
+// a.put("kyle", "hello");
+// console.log(a.data);
 // console.log(a.isEmpty());

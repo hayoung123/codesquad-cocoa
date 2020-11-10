@@ -38,7 +38,8 @@ class HashMap {
         this.data[hashKey].splice(i, 1);
       }
     }
-    return false;
+    if (this.data[hashKey].length === 0) delete this.data[hashKey];
+    return;
   }
   containsKey(key) {
     if (this.findNode(key)) return true;
@@ -78,16 +79,20 @@ class HashMap {
 }
 
 let a = new HashMap();
-a.put(123, "hello1");
-a.put("kyel", "hello2");
-a.replace("kyle", "world");
-a.put("ykle", "hello3");
-a.remove("kyel");
+a.put("kyle", "hello");
 console.log(a.data);
-console.log(a.keys());
-console.log(a.size());
 console.log(a.isEmpty());
-a.clear();
-a.put("kyle", "hello1");
+a.remove("kyle");
 console.log(a.data);
-console.log(a.get("kyle"));
+console.log(a.isEmpty());
+
+// a.put(123, "hello1");
+// a.put("kyel", "hello2");
+// a.put("ykle", "hello3");
+// a.remove("kyel");
+// console.log(a.keys());
+// console.log(a.size());
+// a.clear();
+// a.put("kyle", "hello1");
+// console.log(a.data);
+// console.log(a.get("kyle"));
