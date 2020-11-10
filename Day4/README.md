@@ -1,4 +1,4 @@
-### hash table, 가비지 컬렉션,
+### hash table, 가비지 컬렉션, 시간복잡도,object vs map
 
 # hash table
 
@@ -190,3 +190,103 @@ Big-O 표기법의 복잡도이다.
 참고자료 : https://noahlogs.tistory.com/27
 
 https://towardsdatascience.com/understanding-time-complexity-with-python-examples-2bda6e8158a7
+
+---
+
+# Object vs Map
+
+Map이란?
+
+Map은 자료구조로 **key-value** 쌍으로 저장되는 형식이다.
+key는 **unique**하기때문에 중복이 없다.
+
+맵은 주로 데이터를 **fast searching and looking up** 하는데 사용된다.
+
+Object란?
+
+Object역시 key-value로 저장한다. object에서 **key**를 주로 **property**라고 부른다. object에서도 key는 **unique**하고 하나의 value와만 associated 돼 있다.
+
+### Map 과 Object 차이
+
+- Key Type
+  - Object의 key type은 string,symbols,integer 밖에 안된다.
+  - Map의 key type은 어떤 것이든 되고 서로 구분된다. (array,object...)
+- Map은 데이터의 순서를 보존하는 반면 Object는 그렇지 않다.
+- Map은 Object의 인스턴스이지만 Object는 그렇지 않다.
+
+ex)
+[`instanceof`](https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Operators/instanceof) 메소드
+
+```javascript
+let myMap = new Map();
+myMap.set(1, 2);
+console.log(myMap instanceof Object); //true
+console.log(myMap instanceof Map); //true
+
+let obj = new Object();
+console.log(obj instanceof Map); //false
+```
+
+다른 차이를 더 보자
+
+### How to construct
+
+**Object**
+
+- 리터럴 방식
+
+```javascript
+let obj = {};
+```
+
+- 생성자 방식
+
+```javascript
+let obj = new Object();
+//or
+let obj2 = new object();
+```
+
+- Object.prototype.create 사용
+
+```javascript
+let obj = Object.create(null);
+```
+
+`Object.prototype.create` 은 생성자 없이 상속을 이용하고 싶은 특별한 상황에서만 사용합니다.
+
+```javascript
+let Vehicle = {
+  type: "General",
+  show: () => console.log(this.type),
+};
+let Car = Object.create(Vehicle); //vehicle 상속하는 new Car
+Car.type = "Car";
+//Car.type > "Car"
+//Vechicel.type > "General"
+```
+
+**Map**
+
+```javascript
+let map = new Map(); //Empty Map {}
+let map = new Map([
+  [1, 2],
+  [2, 3],
+]); // map = {1=>2, 2=>3}
+```
+
+### Accessing element
+
+- Map은 `get`이라는 메소드를 이용해서 element value에 접근한다. 우리는 element value를 검색하는 key값을 필요로 한다.
+- `has` 메소드를 이용해 key값의 존재 유무를 확인할 수 있다.
+- Object는 `obj.key` or `obj['key']`
+- Object는 `hasOwnProperty()`을 이용해 존재유무 확인 가능
+
+### iterable
+
+-Map은 iterable하다. -`for of`,`forEach` 로 접근할 수 있다. `for of` 로 접근할 때 for (const [key,value] of map) 으로 해서 key,value 따로접근할 수 도 있다. `forEach`도 같다.
+
+- Object는 `for in` 으로 접근가능하다.
+
+참고 : https://medium.com/front-end-weekly/es6-map-vs-object-what-and-when-b80621932373
