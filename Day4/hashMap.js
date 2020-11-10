@@ -17,12 +17,11 @@ class HashTable {
     return hashKey % this.size;
   }
   findNode(stringKey) {
-    for (let x of Object.keys(this.data)) {
-      let node = this.data[x];
-      while (node) {
-        if (node.key === stringKey) return node;
-        node = node.next;
-      }
+    const hashKey = this.hash(stringKey);
+    let node = this.data[hashKey];
+    while (node) {
+      if (node.key === stringKey) return node;
+      node = node.next;
     }
     return null;
   }
@@ -124,5 +123,5 @@ a.replace("kyle", "welcome");
 a.clear();
 console.log(a);
 a.put("kyle", "hello");
-console.log(a);
+console.log(a.data);
 // console.log(a.isEmpty());

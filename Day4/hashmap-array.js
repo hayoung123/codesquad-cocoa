@@ -1,21 +1,20 @@
 class HashMap {
-  constructor(size = 10) {
+  constructor(hashSize = 10) {
     this.allKeys = [];
     this.data = {};
-    this.size = size;
+    this.hashSize = hashSize;
   }
   hash(str) {
-    const hashKey = str
+    const hashKey = (str + "")
       .split("")
       .reduce((acc, curr) => acc + curr.charCodeAt(), 0);
-    return hashKey % this.size;
+    return hashKey % this.hashSize;
   }
 
   findNode(key) {
-    for (let x of Object.keys(this.data)) {
-      for (let item of this.data[x]) {
-        if (item[0] === key) return item;
-      }
+    const hashKey = this.hash(key);
+    for (let item of this.data[hashKey]) {
+      if (item[0] === key) return item;
     }
     return null;
   }
@@ -75,13 +74,21 @@ class HashMap {
   }
   clear() {
     this.allKeys = [];
-    this.data = [];
+    this.data = {};
   }
 }
 
 let a = new HashMap();
-a.put("kyle", "hello1");
+a.put(123, "hello1");
 a.put("kyel", "hello2");
 a.replace("kyle", "world");
 a.put("ykle", "hello3");
 a.remove("kyel");
+console.log(a.data);
+console.log(a.keys());
+console.log(a.size());
+console.log(a.isEmpty());
+a.clear();
+a.put("kyle", "hello1");
+console.log(a.data);
+console.log(a.get("kyle"));
