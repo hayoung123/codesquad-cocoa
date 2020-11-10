@@ -30,6 +30,7 @@ class HashMap {
         this.data[hashKey].push([key, value]);
       }
     }
+    this.addKey(key);
   }
   remove(key) {
     const hashKey = this.hash(key);
@@ -39,7 +40,7 @@ class HashMap {
       }
     }
     if (this.data[hashKey].length === 0) delete this.data[hashKey];
-    return;
+    this.removeKey(key);
   }
   containsKey(key) {
     if (this.findNode(key)) return true;
@@ -53,23 +54,30 @@ class HashMap {
     if (Object.keys(this.data).length === 0) return true;
     else return false;
   }
+  addKey(key) {
+    this.allKeys.push(key);
+  }
+  removeKey(key) {
+    this.allKeys.splice(this.allKeys.indexOf(key), 1);
+  }
   keys() {
-    this.allKeys = [];
-    for (let x of Object.keys(this.data)) {
-      for (let item of this.data[x]) {
-        this.allKeys.push(item[0]);
-      }
-    }
     return this.allKeys;
   }
+  // keys() {
+  //   this.allKeys = [];
+  //   for (let x of Object.keys(this.data)) {
+  //     for (let item of this.data[x]) {
+  //       this.allKeys.push(item[0]);
+  //     }
+  //   }
+  //   return this.allKeys;
+  // }
   replace(key, value) {
     if (this.findNode(key)) {
       this.findNode(key)[1] = value;
     } else return null;
   }
   size() {
-    this.allKeys = [];
-    this.keys();
     return this.allKeys.length;
   }
   clear() {
@@ -86,13 +94,13 @@ a.remove("kyle");
 console.log(a.data);
 console.log(a.isEmpty());
 
-// a.put(123, "hello1");
-// a.put("kyel", "hello2");
-// a.put("ykle", "hello3");
-// a.remove("kyel");
-// console.log(a.keys());
-// console.log(a.size());
-// a.clear();
-// a.put("kyle", "hello1");
-// console.log(a.data);
-// console.log(a.get("kyle"));
+a.put(123, "hello1");
+a.put("kyel", "hello2");
+a.put("ykle", "hello3");
+a.remove("kyel");
+console.log(a.keys());
+console.log(a.size());
+a.clear();
+a.put("kyle", "hello1");
+console.log(a.data);
+console.log(a.get("kyle"));
