@@ -63,15 +63,6 @@ class HashMap {
   keys() {
     return this.allKeys;
   }
-  // keys() {
-  //   this.allKeys = [];
-  //   for (let x of Object.keys(this.data)) {
-  //     for (let item of this.data[x]) {
-  //       this.allKeys.push(item[0]);
-  //     }
-  //   }
-  //   return this.allKeys;
-  // }
   replace(key, value) {
     if (this.findNode(key)) {
       this.findNode(key)[1] = value;
@@ -88,12 +79,6 @@ class HashMap {
 
 let a = new HashMap();
 a.put("kyle", "hello");
-console.log(a.data);
-console.log(a.isEmpty());
-a.remove("kyle");
-console.log(a.data);
-console.log(a.isEmpty());
-
 a.put(123, "hello1");
 a.put("kyel", "hello2");
 a.put("ykle", "hello3");
