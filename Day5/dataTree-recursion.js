@@ -1,3 +1,5 @@
+const { filterBraceNuM } = require("./filterData");
+
 class Node {
   constructor(type, value) {
     this.type = type;
@@ -9,7 +11,7 @@ class Node {
 class ArrayInfo {
   constructor(str) {
     this.dataTree = new Node("root");
-    this.data = str.split("").filter((v) => v !== ",");
+    this.data = filterBraceNuM(str);
   }
   run(node = this.dataTree, head = this.dataTree) {
     if (this.data.length === 0) {
@@ -34,8 +36,9 @@ class ArrayInfo {
   }
 }
 
+module.exports = ArrayInfo;
 // let a = new ArrayInfo("[1,[2,3]]");
-let a = new ArrayInfo("[1,[2,[3],[4]],[5]]");
-a.run();
+// let a = new ArrayInfo("[10,[2,[30],[4]],[5]]");
+// a.run();
 
-console.log(JSON.stringify(a.run(), null, "\t"));
+// console.log(JSON.stringify(a.dataTree, null, "\t"));
