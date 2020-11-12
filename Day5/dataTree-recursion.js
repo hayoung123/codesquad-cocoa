@@ -28,7 +28,10 @@ class ArrayInfo {
         head.child.push(node);
         return;
       } else {
-        const newNode = new Node("number", this.data.shift());
+        let thisData = this.data.shift();
+        const newNode = isNaN(Number(thisData))
+          ? new Node("string", thisData)
+          : new Node("number", thisData);
         node.child.push(newNode);
         this.run(node, head);
       }
