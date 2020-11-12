@@ -1,15 +1,9 @@
 class Node {
   constructor(type = "root", value, head) {
-    if (value) {
-      this.type = type;
-      this.value = value;
-      this.child = [];
-      this.head = head;
-    } else {
-      this.type = type;
-      this.child = [];
-      this.head = head;
-    }
+    this.type = type;
+    this.value = value;
+    this.child = [];
+    this.head = head;
   }
 }
 
@@ -34,9 +28,6 @@ function arrayInfo(data) {
     }
   }
   dataTree = run(dataTree);
-
-  console.log(`dataTree :  ${JSON.stringify(dataTree)}`);
-
   return dataTree;
 }
 
@@ -50,5 +41,8 @@ function run(data) {
   }
   return data;
 }
-arrayInfo("[1,[2,[3],[4]],[5]]");
+console.log(
+  `dataTree :  ${JSON.stringify(arrayInfo("[1,[2,[3],[4]],[5]]"), null, "\t")}`
+);
+
 // console.log(arrayInfo("[1,[2,[3],[4]],[5]]"));

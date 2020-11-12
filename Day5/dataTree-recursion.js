@@ -1,13 +1,8 @@
 class Node {
   constructor(type, value) {
-    if (value) {
-      this.type = type;
-      this.value = value;
-      this.child = [];
-    } else {
-      this.type = type;
-      this.child = [];
-    }
+    this.type = type;
+    this.value = value;
+    this.child = [];
   }
 }
 
@@ -18,12 +13,13 @@ class ArrayInfo {
   }
   run(node = this.dataTree, head = this.dataTree) {
     if (this.data.length === 0) {
-      return head;
+      return node;
     } else {
       if (this.data[0] === "[") {
         this.data.shift();
         const newNode = new Node("array");
         this.run(newNode, node);
+        //
         this.run(node, head);
       } else if (this.data[0] === "]") {
         this.data.shift();
@@ -38,7 +34,8 @@ class ArrayInfo {
   }
 }
 
-// let a = new ArrayInfo("[1,[2]]");
+// let a = new ArrayInfo("[1,[2,3]]");
 let a = new ArrayInfo("[1,[2,[3],[4]],[5]]");
 a.run();
-console.log(JSON.stringify(a.run()));
+
+console.log(JSON.stringify(a.run(), null, "\t"));
