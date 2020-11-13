@@ -6,16 +6,23 @@ const [L_BRACKET, R_BRAKET, L_BRACE, R_BRACE, COMMA, COLON] = [
   ",",
   ":",
 ];
-function Node(type, value) {
-  this.type = type;
-  this.value = value;
-  this.child = [];
-}
+
 function DataTree(data) {
   this.data = data;
   this.tokenArr = [];
-  this.parsedData = new Node("root");
+  this.parsedData = new this.node("root");
 }
+//node 생성
+DataTree.prototype.node = function (type, value) {
+  if (value) {
+    this.type = type;
+    this.value = value;
+    this.child = [];
+  } else {
+    this.type = type;
+    this.child = [];
+  }
+};
 
 //tokenize 배열, 객체, 스트링, 숫자 쪼개기
 DataTree.prototype.tokenize = function (stringData) {
@@ -52,15 +59,15 @@ DataTree.prototype.isObjectValue = function (str) {
 
 //lexer
 DataTree.prototype.lexer = function (x) {
-  if (x === L_BRACKET) return new Node("array");
-  else if (x === L_BRACE) return new Node("object");
+  if (x === L_BRACKET) return new this.node("array");
+  else if (x === L_BRACE) return new this.node("object");
   else if (this.isObjectValue(x)) {
     const data = x.split(COLON).map((v) => v.trim());
-    const newNode = new Node("property", data[1]);
+    const newNode = new this.node("property", data[1]);
     newNode.key = data[0];
     return newNode;
-  } else if (!isNaN(Number(x))) return new Node("number", x);
-  else return new Node("string", x);
+  } else if (!isNaN(Number(x))) return new this.node("number", x);
+  else return new this.node("string", x);
 };
 
 //parser
@@ -91,4 +98,5 @@ let a = new DataTree();
 let k = a.tokenize("[12, 23, [hello, [3], world], {x:1, y:2},{z:3}]");
 console.log(k);
 a.parser();
-console.log(JSON.stringify(a.parsedData, null, "\t"));
+console.dir(a.parsedData, { depth: null });
+// console.log(JSON.stringify(a.parsedData, null, "\t"));
