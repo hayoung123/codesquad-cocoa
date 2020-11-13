@@ -41,22 +41,22 @@ DataTree.prototype.node = function (type, value) {
 };
 
 //tokenize 배열, 객체, 스트링, 숫자 쪼개기
-DataTree.prototype.tokenize = function () {
+DataTree.prototype.tokenize = function (data = this.data) {
+  let tokenArray = [];
   let temp = [];
-  for (let x of this.data) {
-    if (this.isLBracketBrace(x)) this.tokenArr.push(x);
+  for (let x of data) {
+    if (this.isLBracketBrace(x)) tokenArray.push(x);
     else if (this.isRBracketBrace(x) || this.isComma(x)) {
       if (temp.length) {
-        this.tokenArr.push(temp.join(""));
+        tokenArray.push(temp.join(""));
         temp = [];
       }
-      this.tokenArr.push(x);
+      tokenArray.push(x);
     } else temp.push(x);
   }
-  this.tokenArr = this.tokenArr
-    .filter((v) => !this.isComma(v))
-    .map((v) => v.trim());
-  return this.tokenArr;
+  tokenArray = tokenArray.filter((v) => !this.isComma(v)).map((v) => v.trim());
+  this.tokenArr = tokenArray;
+  return tokenArray;
 };
 
 //is function
