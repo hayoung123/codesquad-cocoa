@@ -45,12 +45,12 @@ function checkArr(str) {
   }
   if (stack.length) {
     console.log("잘못된 정보입니다.");
-    return true;
+    return false;
   } else {
     console.log(
       `깊이 수준은 ${maxDepth}이며, 총 ${value.length}개의 원소가 포함되어 있습니다.`
     );
-    return false;
+    return true;
   }
 }
 function run(data) {

@@ -1,4 +1,4 @@
-const [L_BRACKET, R_BRAKET, L_BRACE, R_BRACE, COMMA, COLON] = [
+const [L_BRACKET, R_BRACKET, L_BRACE, R_BRACE, COMMA, COLON] = [
   "[",
   "]",
   "{",
@@ -6,12 +6,28 @@ const [L_BRACKET, R_BRAKET, L_BRACE, R_BRACE, COMMA, COLON] = [
   ",",
   ":",
 ];
-
 function DataTree(data) {
   this.data = data;
   this.tokenArr = [];
   this.parsedData = new this.node("root");
 }
+DataTree.prototype.isRightData = function () {
+  const stackBracket = [];
+  const stackBrace = [];
+  for (let x of this.tokenArr) {
+    if (this.isLBracketBrace(x))
+      x === L_BRACKET ? stackBracket.push(x) : stackBrace.push(x);
+    else if (x === R_BRACKET) {
+      if (!stackBracket.length) return false;
+      stackBracket.pop();
+    } else if (x === R_BRACE) {
+      if (!stackBrace.length) return false;
+      stackBrace.pop();
+    } else continue;
+  }
+  return !stackBracket.length && !stackBrace.length;
+};
+
 //node 생성
 DataTree.prototype.node = function (type, value) {
   if (value) {
@@ -25,11 +41,11 @@ DataTree.prototype.node = function (type, value) {
 };
 
 //tokenize 배열, 객체, 스트링, 숫자 쪼개기
-DataTree.prototype.tokenize = function (stringData) {
+DataTree.prototype.tokenize = function () {
   let temp = [];
-  for (let x of stringData) {
-    if (this.isLBraket(x)) this.tokenArr.push(x);
-    else if (this.isRBraket(x) || this.isComma(x)) {
+  for (let x of this.data) {
+    if (this.isLBracketBrace(x)) this.tokenArr.push(x);
+    else if (this.isRBracketBrace(x) || this.isComma(x)) {
       if (temp.length) {
         this.tokenArr.push(temp.join(""));
         temp = [];
@@ -44,11 +60,11 @@ DataTree.prototype.tokenize = function (stringData) {
 };
 
 //is function
-DataTree.prototype.isLBraket = function (char) {
+DataTree.prototype.isLBracketBrace = function (char) {
   return char === L_BRACKET || char === L_BRACE;
 };
-DataTree.prototype.isRBraket = function (char) {
-  return char === R_BRAKET || char === R_BRACE;
+DataTree.prototype.isRBracketBrace = function (char) {
+  return char === R_BRACKET || char === R_BRACE;
 };
 DataTree.prototype.isComma = function (char) {
   return char === COMMA;
@@ -77,12 +93,12 @@ DataTree.prototype.parser = function (
 ) {
   const nowValue = this.tokenArr[0];
   if (this.tokenArr.length === 0) return head;
-  if (this.isLBraket(nowValue)) {
+  if (this.isLBracketBrace(nowValue)) {
     const newNode = this.lexer(nowValue);
     this.tokenArr.shift();
     this.parser(newNode, node);
     this.parser(node, head);
-  } else if (this.isRBraket(nowValue)) {
+  } else if (this.isRBracketBrace(nowValue)) {
     this.tokenArr.shift();
     head.child.push(node);
     return;
@@ -93,10 +109,18 @@ DataTree.prototype.parser = function (
     this.parser(node, head);
   }
 };
+DataTree.prototype.run = function () {
+  console.log(`String Data : ${this.data}`);
+  this.tokenize();
+  const check = this.isRightData();
+  if (check) {
+    this.parser();
+    console.dir(a.parsedData, { depth: null });
+    // console.log(JSON.stringify(a.parsedData, null, "\t"));
+  } else {
+    console.log("잘못된 데이터!!");
+  }
+};
 
-let a = new DataTree();
-let k = a.tokenize("[12, 23, [hello, [3], world], {x:1, y:2},{z:3}]");
-console.log(k);
-a.parser();
-console.dir(a.parsedData, { depth: null });
-// console.log(JSON.stringify(a.parsedData, null, "\t"));
+let a = new DataTree("[12, 23, [hello, [3], world], {x:1, y:2},{z:3}]");
+a.run();
