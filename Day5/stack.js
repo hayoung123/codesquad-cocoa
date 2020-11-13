@@ -1,5 +1,24 @@
-const ArrayInfo = require("./dataTree-recursion");
-const { filterBraceNuM } = require("./filterData");
+//filter
+function filterBraceNum(str) {
+  const data = [];
+  let tmpNum = [];
+  for (let x of str.split("")) {
+    if (x === "[") data.push("[");
+    else if (x === "]") {
+      if (tmpNum.length) {
+        data.push(tmpNum.join(""));
+        tmpNum = [];
+      }
+      data.push("]");
+    } else if (x === ",") {
+      if (tmpNum.length) {
+        data.push(tmpNum.join(""));
+        tmpNum = [];
+      }
+    } else tmpNum.push(x);
+  }
+  return data;
+}
 
 //올바른 데이터 check & value
 function checkArr(str) {
