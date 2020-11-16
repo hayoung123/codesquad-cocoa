@@ -70,6 +70,8 @@ class Model {
     localStorage.setItem(TODO, JSON.stringify(todoArr));
   }
 }
-
-View.prototype.showList();
-todoForm.addEventListener("submit", Model.prototype.handleForm);
+function init() {
+  View.prototype.showList();
+  todoForm.addEventListener("submit", Model.prototype.handleForm);
+}
+init();
