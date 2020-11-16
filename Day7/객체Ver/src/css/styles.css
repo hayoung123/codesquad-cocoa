@@ -32,14 +32,14 @@ main {
 }
 
 .todo__form {
-  width: 500px;
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 .todo__form > input {
   width: 70%;
-  height: 40px;
+  height: 30px;
   margin-right: 10px;
   padding-left: 10px;
   border: 1px solid gray;
@@ -64,14 +64,14 @@ ul {
 }
 li {
   list-style: none;
-  width: 400px;
+  width: 87%;
   height: 50px;
   border: 1px solid gray;
   border-top: none;
   border-radius: 7px;
   display: grid;
   align-items: center;
-  grid-template-columns: 1fr 5fr 1fr;
+  grid-template-columns: 0.5fr 5fr 0.5fr;
 }
 li:first-child {
   border-top: 1px solid gray;
@@ -80,6 +80,7 @@ li > input {
   margin-left: 20px;
 }
 li > span:last-child {
+  font-size: 20px;
   cursor: pointer;
 }
 .strikeThrough {
