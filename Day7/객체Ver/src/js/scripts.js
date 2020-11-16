@@ -28,12 +28,12 @@ class View {
     li.remove();
   }
   strikethrough() {
+    const li = this.parentNode;
+    const todo = li.childNodes[1];
     if (this.checked) {
-      const li = this.parentNode;
-      li.classList.add("strikeThrough");
+      todo.classList.add("strikeThrough");
     } else {
-      const li = this.parentNode;
-      li.classList.remove("strikeThrough");
+      todo.classList.remove("strikeThrough");
     }
   }
 }
@@ -60,22 +60,24 @@ init();
 // let listId = 1;
 
 // class View {
-//   createLi(id, todo) {
-//     const li = document.createElement("li");
-//     const checkBox = document.createElement("input");
-//     checkBox.type = "checkbox";
-//     checkBox.addEventListener("input", this.strikethrough);
-//     const deleteBtn = document.createElement("span");
-//     deleteBtn.innerText = "❌";
-//     deleteBtn.addEventListener("click", this.deleteTodo);
-//     const text = document.createElement("span");
-//     text.innerText = todo;
-//     li.appendChild(checkBox);
-//     li.appendChild(text);
-//     li.appendChild(deleteBtn);
-//     li.id = id;
-//     ulTodoList.appendChild(li);
-//   }
+//     createLi(todo) {
+//         const li = this.createDom("li");
+//         const checkBox = this.createDom("input");
+//         checkBox.type = "checkbox";
+//         checkBox.addEventListener("input", this.strikethrough);
+//         const deleteBtn = this.createDom("span", "❌");
+//         deleteBtn.addEventListener("click", this.deleteTodo);
+//         const text = this.createDom("span", todo);
+//         li.appendChild(checkBox);
+//         li.appendChild(text);
+//         li.appendChild(deleteBtn);
+//         ulTodoList.appendChild(li);
+//       }
+//     createDom(type, content) {
+//         const element = document.createElement(type);
+//         if (content) element.innerText = content;
+//         return element;
+//       }
 //   completeList(todoList) {
 //     const liIdList = ulTodoList.childNodes.map((v) => v.id);
 //     todoList.forEach((v) => {
