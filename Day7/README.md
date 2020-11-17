@@ -1,5 +1,7 @@
 # 버블링, 캡처링
 
+https://mygumi.tistory.com/315
+
 # Local Storage 와 sessionStorage
 
 웹 스토리지 객체 localStorage와 sessionStorage는 브라우저 내에 키-값 쌍을 저장할 수있다.
@@ -67,5 +69,11 @@ localStorage는 `setItem`으로 데이터가 입력된 순서를 기억하는 �
         https://ko.javascript.info/localstorage
 
 # HTTP vs HTTPS
+
+http://blog.wishket.com/http-vs-https-%EC%B0%A8%EC%9D%B4-%EC%95%8C%EB%A9%B4-%EC%82%AC%EC%9D%B4%ED%8A%B8%EC%9D%98-%EB%A0%88%EB%B2%A8%EC%9D%B4-%EB%B3%B4%EC%9D%B8%EB%8B%A4/
+
+# MVC
+
+https://m.blog.naver.com/jhc9639/220967034588
 
 # 도메인,프로토콜,포트로 정의되는 오리진

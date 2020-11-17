@@ -51,7 +51,7 @@ class View {
 }
 class Model {
   //this가 event호출한 form으로 묶이기 때문에 this.메소드하면 에러남
-  handleForm(event) {
+  handleForm() {
     const todo = this.todo.value;
     this.todo.value = "";
     Model.prototype.addItem(listId, todo);
