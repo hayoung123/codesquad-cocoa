@@ -40,12 +40,9 @@ class View {
   handleSubmit = ({ target }) => {
     const todo = target.todo.value;
     target.todo.value = "";
-    this.initEvent(todo);
-  };
-  initEvent(todo) {
     this.todoModel.addItem(this.listId, todo);
     this.createLi(todo);
-  }
+  };
   createLi(todo) {
     const li = this.createDom("li");
     const checkBox = this.createDom("input");
