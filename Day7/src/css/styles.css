@@ -83,6 +83,6 @@ li > span:last-child {
   font-size: 20px;
   cursor: pointer;
 }
-.strikeThrough {
+.lineThrough {
   text-decoration: line-through;
 }

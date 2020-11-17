@@ -16,9 +16,15 @@ class Model {
     localStorage.setItem(this.storageKey, JSON.stringify(this.todoArray));
   }
   getTodoList() {
-    const toDoStorage = localStorage.getItem(this.storageKey);
-    this.todoArray = toDoStorage ? JSON.parse(toDoStorage) : [];
+    this.resetTodoArray();
     return this.todoArray;
+  }
+  resetTodoArray() {
+    const stringStorage = localStorage.getItem(this.storageKey);
+    const parsedStorage = JSON.parse(stringStorage);
+    parsedStorage.forEach((item, idx) => (item.key = idx + 1));
+    this.todoArray = parsedStorage;
+    this.saveStorage();
   }
 }
 class View {
@@ -66,15 +72,14 @@ class View {
     li.remove();
   };
   strikethrough = ({ target }) => {
-    const li = target.parentNode;
-    const childLi = li.childNodes;
+    const LINE_THROUGH = "lineThrough";
+    const spanTodo = target.nextSibling;
     if (target.checked) {
-      childLi[1].classList.add("strikeThrough");
+      spanTodo.classList.add(LINE_THROUGH);
     } else {
-      childLi[1].classList.remove("strikeThrough");
+      spanTodo.classList.remove(LINE_THROUGH);
     }
   };
-  //localStorage에 없을 때 초기화 해줘야 한다.
   renderList() {
     const todoArray = this.todoModel.getTodoList();
     for (let x of todoArray) {
