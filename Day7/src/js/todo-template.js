@@ -19,6 +19,15 @@ class Model {
     this.resetTodoArray();
     return this.todoArray;
   }
+  editItem(id, editedTodo) {
+    this.todoArray.forEach((v) => {
+      if (v.key === Number(id)) {
+        v.value = editedTodo;
+        return;
+      }
+    });
+    this.saveStorage();
+  }
   resetTodoArray() {
     let stringStorage = localStorage.getItem(this.storageKey);
     if (stringStorage === null) stringStorage = "[]";
@@ -47,33 +56,36 @@ class TodoView {
   };
   createLi(todo) {
     const template = `<li id=${this.listId++}>
-    <input type="checkbox" class="check__input"><span>${todo}</span>
-    <div class="list__btn">
-    <i class="far fa-edit edit__btn"></i>
-    <i class="fas fa-trash-alt delete__btn" id="delete__btn"></i>
-    </div>
+      <input type="checkbox" class="check__input">
+      <span id='todo__text'>${todo}</span>
+      <div class="list__btn">
+        <i class="far fa-edit edit__btn" id="edit__btn"></i>
+        <i class="fas fa-trash-alt delete__btn" id="delete__btn"></i>
+      </div>
     </li>`;
     this.todoList.innerHTML = template + this.todoList.innerHTML;
   }
   handleClick = ({ target }) => {
     const CHECK_BOX = "check__input";
     const DELETE_BTN = "delete__btn";
+    const EDIT_BTN = "edit__btn";
     if (target.className === CHECK_BOX) this.lineThrough(target);
     else if (target.id === DELETE_BTN) this.deleteTodo(target);
+    else if (target.id === EDIT_BTN) this.editTodo(target);
   };
-
-  deleteTodo = (target) => {
-    const li = target.parentNode.parentNode;
-    console.log(li);
-    this.todoModel.deleteItem(li.id);
-    li.remove();
-  };
-  lineThrough = (target) => {
+  lineThrough(target) {
     const todo = target.nextSibling;
     const LINE = "lineThrough";
     if (target.checked) todo.classList.add(LINE);
     else todo.classList.remove(LINE);
-  };
+  }
+  deleteTodo(target) {
+    const li = target.parentNode.parentNode;
+    console.log(li);
+    this.todoModel.deleteItem(li.id);
+    li.remove();
+  }
+  editTodo(target) {}
   renderTodo() {
     const todoArray = this.todoModel.getTodoList();
     for (let x of todoArray) {

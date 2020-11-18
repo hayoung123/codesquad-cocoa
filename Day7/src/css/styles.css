@@ -80,8 +80,15 @@ li > input {
   margin-left: 20px;
 }
 
+.edit__btn {
+  color: #337ab7;
+  font-size: 17px;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
 .delete__btn {
-  color: red;
+  color: #ff0000;
   font-size: 17px;
   cursor: pointer;
 }
