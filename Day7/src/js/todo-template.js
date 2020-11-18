@@ -103,7 +103,8 @@ class TodoView {
   createForm(todo) {
     const newForm = `
       <form class="todo__edit" id="js-todo__edit" onsubmit="return false;">
-        <input type="text" name="todo" value = ${todo}><button type="submit"><i class="fas fa-check"></i></button>
+        <input type="text" name="todo" value = ${todo} class="edit__input">
+        <button type="submit" class="edit-confirm__btn"><i class="fas fa-check edit-confirm__icon"></i></button>
       </form>`;
     return newForm;
   }
