@@ -36,6 +36,7 @@ class Model {
     this.saveStorage();
   }
 }
+
 class RenderTodoView {
   constructor({ todoForm, ulTodoList, todoModel }) {
     this.listId = 1;
@@ -108,17 +109,16 @@ class EventTodoView {
   editConfirm = ({ target }) => {
     const HIDDEN = "hidden";
     const editedTodo = target.todo.value;
-    const todoText = target.parentNode;
+    const todoText = this.getTodoText(target);
     const li = todoText.parentNode;
     const editBtn = li.lastElementChild.firstElementChild;
-    editBtn.classList.remove(HIDDEN);
     todoText.innerHTML = editedTodo;
+    editBtn.classList.remove(HIDDEN);
     this.todoModel.editItem(li.id, editedTodo);
   };
   getTodoText(target) {
     const li = target.closest("li");
     const todoText = li.firstElementChild.nextSibling;
-    console.log(todoText);
     return todoText;
   }
   createForm(todo) {
@@ -130,15 +130,16 @@ class EventTodoView {
     return newForm;
   }
 }
-
 function init() {
+  const STORAGE_KEY = "todo";
   const todoForm = document.getElementById("js-todo__form");
   const ulTodoList = document.getElementById("js-todoList");
-  const todoModel = new Model("todo");
+  const todoModel = new Model(STORAGE_KEY);
   const todoView = new RenderTodoView({ todoForm, ulTodoList, todoModel });
   const eventTodoView = new EventTodoView({ ulTodoList, todoModel });
   todoView.renderTodo();
   todoView.init();
   eventTodoView.init();
 }
+
 init();

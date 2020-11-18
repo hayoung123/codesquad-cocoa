@@ -27,13 +27,24 @@ console.log(this === module.exports, this === exports); //true, true
 
 자바스크립트는 함수 호출 방식에 의해 this에 바인딩될 객체가 결정된다.
 
-1. 함수 선언식 안에서 this는 global객체를 의미한다.
+1. 함수 선언식 안에서 this는 global객체를 의미한다. 함수선언식은 함수가 실행될 때 this가 동적으로 결정된다. 이런 이유 때문인지 함수 선언식이 내부함수에서 선언될 경우 (콜백함수, 내부함수의 내부함수)는 항상 global,window 처럼 전역객체에 바인딩된다.
+
+이런 방법을 해결하기 위한 방법
+
+- this를 사용하려는 객체에서 사전에 let that = this 로 변수로 선언해서 사용하기
+- apply, call, bind 메소드 사용해 this 바인딩 하기
 
 ```javascript
 function a() {
   console.log(this); //Object[global]
   console.log(this === exports); //false
 }
+const obj = {
+  name: "kyle",
+  getName: function () {
+    console.log(this);
+  }, //global
+};
 ```
 
 참조 : https://www.zerocho.com/category/NodeJS/post/5b67e8607bbbd3001b43fd7b
