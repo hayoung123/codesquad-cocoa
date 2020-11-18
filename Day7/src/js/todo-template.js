@@ -36,16 +36,15 @@ class Model {
     this.saveStorage();
   }
 }
-class TodoView {
-  constructor({ todoModel }) {
+class RenderTodoView {
+  constructor({ todoForm, ulTodoList, todoModel }) {
     this.listId = 1;
-    this.todoForm = document.getElementById("js-todo__form");
-    this.todoList = document.getElementById("js-todoList");
+    this.todoForm = todoForm;
     this.todoModel = todoModel;
+    this.ulTodoList = ulTodoList;
   }
   init() {
     this.todoForm.addEventListener("submit", this.handleSubmit);
-    this.todoList.addEventListener("click", this.handleClick, false);
   }
   handleSubmit = ({ target: { todo } }) => {
     const todoValue = todo.value;
@@ -61,7 +60,23 @@ class TodoView {
         <i class="fas fa-trash-alt delete__btn" id="delete__btn"></i>
       </div>
     </li>`;
-    this.todoList.innerHTML = template + this.todoList.innerHTML;
+    this.ulTodoList.innerHTML = template + this.ulTodoList.innerHTML;
+  }
+  renderTodo() {
+    const todoArray = this.todoModel.getTodoList();
+    for (let x of todoArray) {
+      this.createLi(x.value);
+    }
+  }
+}
+
+class EventTodoView {
+  constructor({ ulTodoList, todoModel }) {
+    this.ulTodoList = ulTodoList;
+    this.todoModel = todoModel;
+  }
+  init() {
+    this.ulTodoList.addEventListener("click", this.handleClick);
   }
   handleClick = ({ target }) => {
     const CHECK_BOX = "check__input";
@@ -78,26 +93,32 @@ class TodoView {
     else todo.classList.remove(LINE);
   }
   deleteTodo(target) {
-    const li = target.parentNode.parentNode;
+    const li = target.closest("li");
     this.todoModel.deleteItem(li.id);
     li.remove();
   }
   editTodo(target) {
+    const HIDDEN = "hidden";
+    target.classList.add(HIDDEN);
     const todoText = this.getTodoText(target);
     const editForm = this.createForm(todoText.innerText);
     todoText.innerHTML = editForm;
     todoText.addEventListener("submit", this.editConfirm);
   }
   editConfirm = ({ target }) => {
+    const HIDDEN = "hidden";
     const editedTodo = target.todo.value;
     const todoText = target.parentNode;
     const li = todoText.parentNode;
+    const editBtn = li.lastElementChild.firstElementChild;
+    editBtn.classList.remove(HIDDEN);
     todoText.innerHTML = editedTodo;
     this.todoModel.editItem(li.id, editedTodo);
   };
   getTodoText(target) {
-    const li = target.parentNode.parentNode;
+    const li = target.closest("li");
     const todoText = li.firstElementChild.nextSibling;
+    console.log(todoText);
     return todoText;
   }
   createForm(todo) {
@@ -108,18 +129,16 @@ class TodoView {
       </form>`;
     return newForm;
   }
-  renderTodo() {
-    const todoArray = this.todoModel.getTodoList();
-    for (let x of todoArray) {
-      this.createLi(x.value);
-    }
-  }
 }
 
 function init() {
+  const todoForm = document.getElementById("js-todo__form");
+  const ulTodoList = document.getElementById("js-todoList");
   const todoModel = new Model("todo");
-  const todoView = new TodoView({ todoModel });
+  const todoView = new RenderTodoView({ todoForm, ulTodoList, todoModel });
+  const eventTodoView = new EventTodoView({ ulTodoList, todoModel });
   todoView.renderTodo();
   todoView.init();
+  eventTodoView.init();
 }
 init();

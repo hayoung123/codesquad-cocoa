@@ -75,7 +75,7 @@ li {
   border-radius: 7px;
   display: grid;
   align-items: center;
-  grid-template-columns: 0.5fr 5fr 0.5fr;
+  grid-template-columns: 0.5fr 5fr 0.7fr;
 }
 li:first-child {
   border-top: 1px solid gray;
@@ -84,6 +84,9 @@ li > input {
   margin-left: 20px;
 }
 
+.list__btn {
+  margin-right: 10px;
+}
 .edit__btn {
   color: #337ab7;
   font-size: 17px;
@@ -100,6 +103,10 @@ li > input {
   color: #337ab7;
   font-size: 17px;
   cursor: pointer;
+}
+.hidden {
+  opacity: 0.5;
+  pointer-events: none;
 }
 .delete__btn {
   color: #ff0000;
