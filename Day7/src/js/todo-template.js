@@ -23,7 +23,6 @@ class Model {
     this.todoArray.forEach((v) => {
       if (v.key === Number(id)) {
         v.value = editedTodo;
-        return;
       }
     });
     this.saveStorage();
@@ -56,8 +55,7 @@ class TodoView {
   };
   createLi(todo) {
     const template = `<li id=${this.listId++}>
-      <input type="checkbox" class="check__input">
-      <span id='todo__text'>${todo}</span>
+      <input type="checkbox" class="check__input"><span id='todo__text'>${todo}</span>
       <div class="list__btn">
         <i class="far fa-edit edit__btn" id="edit__btn"></i>
         <i class="fas fa-trash-alt delete__btn" id="delete__btn"></i>
@@ -81,11 +79,34 @@ class TodoView {
   }
   deleteTodo(target) {
     const li = target.parentNode.parentNode;
-    console.log(li);
     this.todoModel.deleteItem(li.id);
     li.remove();
   }
-  editTodo(target) {}
+  editTodo(target) {
+    const todoText = this.getTodoText(target);
+    const editForm = this.createForm(todoText.innerText);
+    todoText.innerHTML = editForm;
+    todoText.addEventListener("submit", this.editConfirm);
+  }
+  editConfirm = ({ target }) => {
+    const editedTodo = target.todo.value;
+    const todoText = target.parentNode;
+    const li = todoText.parentNode;
+    todoText.innerHTML = editedTodo;
+    this.todoModel.editItem(li.id, editedTodo);
+  };
+  getTodoText(target) {
+    const li = target.parentNode.parentNode;
+    const todoText = li.firstElementChild.nextSibling;
+    return todoText;
+  }
+  createForm(todo) {
+    const newForm = `
+      <form class="todo__edit" id="js-todo__edit" onsubmit="return false;">
+        <input type="text" name="todo" value = ${todo}><button type="submit"><i class="fas fa-check"></i></button>
+      </form>`;
+    return newForm;
+  }
   renderTodo() {
     const todoArray = this.todoModel.getTodoList();
     for (let x of todoArray) {
