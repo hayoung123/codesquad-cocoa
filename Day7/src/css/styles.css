@@ -79,8 +79,10 @@ li:first-child {
 li > input {
   margin-left: 20px;
 }
-li > span:last-child {
-  font-size: 20px;
+
+.delete__btn {
+  color: red;
+  font-size: 17px;
   cursor: pointer;
 }
 .lineThrough {

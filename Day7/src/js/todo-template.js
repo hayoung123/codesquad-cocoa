@@ -1,42 +1,91 @@
-class Model {}
-
-class View {
-  constructor() {
-    this.todoList = document.getElementById("js-todoList");
+class Model {
+  constructor(storageKey) {
+    this.todoArray = [];
+    this.storageKey = storageKey;
+  }
+  addItem(id, todo) {
+    const newTodo = { key: id, value: todo };
+    this.todoArray.push(newTodo);
+    this.saveStorage();
+  }
+  deleteItem(id) {
+    this.todoArray = this.todoArray.filter((v) => v.key !== Number(id));
+    this.saveStorage();
+  }
+  saveStorage() {
+    localStorage.setItem(this.storageKey, JSON.stringify(this.todoArray));
+  }
+  getTodoList() {
+    this.resetTodoArray();
+    return this.todoArray;
+  }
+  resetTodoArray() {
+    let stringStorage = localStorage.getItem(this.storageKey);
+    if (stringStorage === null) stringStorage = "[]";
+    const parsedStorage = JSON.parse(stringStorage);
+    parsedStorage.forEach((item, idx) => (item.key = idx + 1));
+    this.todoArray = parsedStorage;
+    this.saveStorage();
+  }
+}
+class TodoView {
+  constructor({ todoModel }) {
+    this.listId = 1;
     this.todoForm = document.getElementById("js-todo__form");
-    this.todoItem = this.todoList.childNodes;
+    this.todoList = document.getElementById("js-todoList");
+    this.todoModel = todoModel;
   }
   init() {
     this.todoForm.addEventListener("submit", this.handleSubmit);
-    this.todoList.addEventListener("click", this.handleClick);
+    this.todoList.addEventListener("click", this.handleClick, false);
   }
-  handleSubmit = ({ target }) => {
-    const todo = target.todo.value;
-    target.todo.value = "";
-    this.addList(todo);
+  handleSubmit = ({ target: { todo } }) => {
+    const todoValue = todo.value;
+    todo.value = "";
+    this.todoModel.addItem(this.listId, todoValue);
+    this.createLi(todoValue);
   };
-  addList(todo) {
-    const template = `<li><input type="checkbox" class="check__input"><span>${todo}</span><span class="delete__btn">❌</span></li>`;
-    this.todoList.innerHTML += template;
+  createLi(todo) {
+    const template = `<li id=${this.listId++}>
+    <input type="checkbox" class="check__input"><span>${todo}</span>
+    <div class="list__btn">
+    <i class="far fa-edit edit__btn"></i>
+    <i class="fas fa-trash-alt delete__btn" id="delete__btn"></i>
+    </div>
+    </li>`;
+    this.todoList.innerHTML = template + this.todoList.innerHTML;
   }
   handleClick = ({ target }) => {
     const CHECK_BOX = "check__input";
     const DELETE_BTN = "delete__btn";
-    const targetClass = target.className;
-    if (targetClass === CHECK_BOX) this.lineThrough(target);
-    else if (targetClass === DELETE_BTN) this.deleteList(target);
+    if (target.className === CHECK_BOX) this.lineThrough(target);
+    else if (target.id === DELETE_BTN) this.deleteTodo(target);
   };
-  lineThrough(target) {
+
+  deleteTodo = (target) => {
+    const li = target.parentNode.parentNode;
+    console.log(li);
+    this.todoModel.deleteItem(li.id);
+    li.remove();
+  };
+  lineThrough = (target) => {
     const todo = target.nextSibling;
     const LINE = "lineThrough";
     if (target.checked) todo.classList.add(LINE);
     else todo.classList.remove(LINE);
-  }
-  deleteList = (target) => {
-    const li = target.parentNode;
-    li.remove();
   };
+  renderTodo() {
+    const todoArray = this.todoModel.getTodoList();
+    for (let x of todoArray) {
+      this.createLi(x.value);
+    }
+  }
 }
 
-const todoView = new View();
-todoView.init();
+function init() {
+  const todoModel = new Model("todo");
+  const todoView = new TodoView({ todoModel });
+  todoView.renderTodo();
+  todoView.init();
+}
+init();
