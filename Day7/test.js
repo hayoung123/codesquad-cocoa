@@ -33,11 +33,11 @@
 // console.log(this.name);
 // a();
 
-const obj = {
-  name: "kyle",
-  getName: function () {
-    console.log(this);
-  }, //global
-};
+class person {
+  sayHi = () => {
+    // === sayHi: function() {
+    console.log(`Hi ${this.name}`);
+  };
+}
 
-obj.getName();
+person.sayHi(); // Hi Lee
