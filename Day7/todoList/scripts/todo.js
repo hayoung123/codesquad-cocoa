@@ -1,3 +1,4 @@
+//storage class 사용할 storage를 인자로 받아서 사용 / local,sessionStoarge 생각하고 만든 클래스
 class Storage {
   constructor(storage) {
     this.storage = storage;
@@ -7,11 +8,13 @@ class Storage {
     if (!storageValue) return [];
     else return JSON.parse(storageValue);
   }
-  save(storageKey, parsedArray) {
+  set(storageKey, parsedArray) {
     this.storage.setItem(storageKey, JSON.stringify(parsedArray));
   }
 }
 
+//todolist를 배열로 관리하는 class
+//View단에서 변경될 때마다 정보를 받아와 변경시킨다. 변경되면 storage에도 저장한다.
 class Model {
   constructor(storage, storageKey) {
     this.todoArray = [];
@@ -21,11 +24,11 @@ class Model {
   addItem(id, todo) {
     const newTodo = { key: id, value: todo };
     this.todoArray.push(newTodo);
-    this.storage.save(this.storageKey, this.todoArray);
+    this.storage.set(this.storageKey, this.todoArray);
   }
   deleteItem(id) {
     this.todoArray = this.todoArray.filter((v) => v.key !== Number(id));
-    this.storage.save(this.storageKey, this.todoArray);
+    this.storage.set(this.storageKey, this.todoArray);
   }
   getTodoList() {
     this.resetTodoArray();
@@ -37,25 +40,27 @@ class Model {
         v.value = editedTodo;
       }
     });
-    this.storage.save(this.storageKey, this.todoArray);
+    this.storage.set(this.storageKey, this.todoArray);
   }
   resetTodoArray() {
     const parsedStorage = this.storage.get(this.storageKey);
     parsedStorage.forEach((item, idx) => (item.key = idx + 1));
     this.todoArray = parsedStorage;
-    this.storage.save(this.storageKey, this.todoArray);
+    this.storage.set(this.storageKey, this.todoArray);
   }
 }
 
-class RenderTodoView {
+// add, delete, edit, check 등의 이벤트가 일어나는 View class
+class EventTodoView {
   constructor({ todoForm, ulTodoList, todoModel }) {
     this.listId = 1;
-    this.todoForm = todoForm;
-    this.todoModel = todoModel;
     this.ulTodoList = ulTodoList;
+    this.todoModel = todoModel;
+    this.todoForm = todoForm;
   }
   init() {
     this.todoForm.addEventListener("submit", this.handleSubmit.bind(this));
+    this.ulTodoList.addEventListener("click", this.handleClick.bind(this));
   }
   handleSubmit({ target: { todo } }) {
     const todoValue = todo.value;
@@ -73,20 +78,6 @@ class RenderTodoView {
       </div>
     </li>`;
     this.ulTodoList.innerHTML = template + this.ulTodoList.innerHTML;
-  }
-  renderTodo() {
-    const todoArray = this.todoModel.getTodoList();
-    todoArray.forEach((todo) => this.createLi(todo.value));
-  }
-}
-
-class EventTodoView {
-  constructor({ ulTodoList, todoModel }) {
-    this.ulTodoList = ulTodoList;
-    this.todoModel = todoModel;
-  }
-  init() {
-    this.ulTodoList.addEventListener("click", this.handleClick.bind(this));
   }
   handleClick({ target }) {
     const CHECK_BOX = "check__input";
@@ -108,22 +99,29 @@ class EventTodoView {
     li.remove();
   }
   editTodo(target) {
-    const HIDDEN = "hidden";
-    target.classList.add(HIDDEN);
+    this.updateEditBtn(target);
     const todoText = this.getTodoText(target);
     const editForm = this.createForm(todoText.innerText);
     todoText.innerHTML = editForm;
     todoText.addEventListener("submit", this.editConfirm.bind(this));
   }
   editConfirm({ target }) {
-    const HIDDEN = "hidden";
+    this.updateEditBtn(target);
     const editedTodo = target.todo.value;
     const todoText = this.getTodoText(target);
     const li = this.getLi(target);
-    const editBtn = li.lastElementChild.firstElementChild;
     todoText.innerHTML = editedTodo;
-    editBtn.classList.remove(HIDDEN);
     this.todoModel.editItem(li.id, editedTodo);
+  }
+  updateEditBtn(target) {
+    const HIDDEN = "hidden";
+    const editBtn = this.getEditBtn(target);
+    if (editBtn.classList.contains(HIDDEN)) editBtn.classList.remove(HIDDEN);
+    else editBtn.classList.add(HIDDEN);
+  }
+  getEditBtn(target) {
+    const li = this.getLi(target);
+    return li.lastElementChild.firstElementChild;
   }
   getLi(target) {
     return target.closest("li");
@@ -142,16 +140,39 @@ class EventTodoView {
     return newForm;
   }
 }
+//model에서 정보를 받아와 render시키는 view Class
+class RenderTodoView {
+  constructor({ eventTodoView, todoModel }) {
+    this.todoModel = todoModel;
+    this.eventTodoView = eventTodoView;
+  }
+  renderTodo() {
+    const todoArray = this.todoModel.getTodoList();
+    todoArray.forEach((todo) => this.eventTodoView.createLi(todo.value));
+  }
+}
+
+/*
+1. storage class를 통해 localStorage를 사용하게 하는 객체를 생성
+2. todoList를 다룰 model을 생성.
+  2-1. todoList가 변경 될 시 storage에 저장을 해준다.
+3. event View처리를 맡은 eventTodoView 객체생성
+  3-1. form에서 제출되면 list를 추가한다.
+  3-2. check,edit,delete event가 일어나면 li를 업데이트, 삭제 한다. 
+  3-3. evnet 처리가 일어날 때 변경되는 데이터를 model에 넘겨준다.
+4. 새로고침 될 때 model로 부터 정보를 받아와 render한다.
+    이 과정에서 eventTodoView에 있는 createLi 메소드가 필요해 받아와서 사용하지만,,, 좋은 방법인지에 대한 의문은 있다...
+*/
+
 function init() {
   const STORAGE_KEY = "todo";
   const todoForm = document.getElementById("js-todo__form");
   const ulTodoList = document.getElementById("js-todoList");
   const localStorage = new Storage(window.localStorage);
   const todoModel = new Model(localStorage, STORAGE_KEY);
-  const todoView = new RenderTodoView({ todoForm, ulTodoList, todoModel });
-  const eventTodoView = new EventTodoView({ ulTodoList, todoModel });
+  const eventTodoView = new EventTodoView({ todoForm, ulTodoList, todoModel });
+  const todoView = new RenderTodoView({ eventTodoView, todoModel });
   todoView.renderTodo();
-  todoView.init();
   eventTodoView.init();
 }
 
