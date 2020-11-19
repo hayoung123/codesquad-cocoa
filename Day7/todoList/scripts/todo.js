@@ -65,9 +65,7 @@ class RenderTodoView {
   }
   renderTodo() {
     const todoArray = this.todoModel.getTodoList();
-    for (let x of todoArray) {
-      this.createLi(x.value);
-    }
+    todoArray.forEach((todo) => this.createLi(todo.value));
   }
 }
 
