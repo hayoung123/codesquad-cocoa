@@ -33,11 +33,32 @@
 // console.log(this.name);
 // a();
 
-class person {
-  sayHi = () => {
-    // === sayHi: function() {
-    console.log(`Hi ${this.name}`);
+// class person {
+//   sayHi = () => {
+//     // === sayHi: function() {
+//     console.log(`Hi ${this.name}`);
+//   };
+// }
+// queryselector;
+// person.sayHi(); // Hi Lee
+
+class Event {
+  init() {
+    div.addEventListener("click", this.sayThis);
+    div.addEventListener("click", this.sayThat);
+    div.addEventListener("click", this.useBind.bind(this)); //
+  }
+  sayThis() {
+    console.log("함수 선언식", this); // div
+  }
+  sayThat = () => {
+    console.log("함수 표현식", this); //Event
   };
+  useBind() {
+    console.log("함수 선언식 with bind", this); //Event
+  }
 }
-queryselector;
-person.sayHi(); // Hi Lee
+
+const div = document.querySelector("div");
+const kkk = new Event();
+kkk.init();

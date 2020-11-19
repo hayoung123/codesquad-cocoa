@@ -26,7 +26,7 @@ function a() {
 }
 ```
 
-흔히 우리가 아는 this가 global객체로 바인딩 되는 경우는 따로 있다.
+흔히 우리가 아는 this가 global객체로 바인딩 되는 경우는 따로 있다. this는 함수를 어떻게 선언했는지 어디서 활용됐는지에 따라서 동적으로 혹은 정적으로 정해진다.
 
 ## 함수 호출에 따른 this 바인딩
 
@@ -169,11 +169,53 @@ obj.sayHello.bind(obj2)(); //kelly
 
 위의 예제처럼 bind는 함수를 리턴하기 때문에 호출을 따로 해주어야 한다.
 
-[poiemaweb](https://poiemaweb.com/js-this) 에서 보고 예제를 만들어 보면서 이해해 작성했다. 알면 알수록 알아야 될게 끊임없이 이어져서 나온다..ㅎㅎ
+## addEventListener 사용시 콜백함수의 this
+
+`addEventListener` 를 사용해서 콜백 함수를 호출할 때 콜백함수는 addEventLisener를 호출하는 즉, 트리거가 되는 객체가 this 로 바인딩 돼 들어간다.
+
+이러한 현상은 코딩할 때 혼동을 주기 마련이다.
+
+2가지 해결 방안이 있다.
+
+1. 콜백함수를 화살표함수로 작성하기
+2. bind로 this 바인딩하기
+
+아래 예제를 보고 이해해보자.
+
+```javascript
+class Event {
+  init() {
+    div.addEventListener("click", this.sayThis);
+    div.addEventListener("click", this.sayThat);
+    div.addEventListener("click", this.useBind.bind(this));
+  }
+  sayThis() {
+    console.log("함수 선언식", this); // div
+  }
+  sayThat = () => {
+    console.log("화살표 함수", this); //Event
+  };
+  useBind() {
+    console.log("함수 선언식 with bind", this); //Event
+  }
+}
+```
+
+하지만 화살표 함수를 이용할 때 문제점이 있다.
+
+Event의 prototype property 가 가르키는 객체에 화살표 함수로 선언된 `sayThat`은 포함되지 않는다.
+
+이는 상속한 뒤 `override`하고 싶을 때 번거로움을 유발시킨다.
+
+자바스크립트에 대해 공부하면서 알면 알수록 알아야 될게 끊임없이 이어져서 나온다..ㅎㅎ
+
+그래도 재밌다
 
 참조 : https://www.zerocho.com/category/NodeJS/post/5b67e8607bbbd3001b43fd7b
 
 https://poiemaweb.com/js-this
+
+https://stackoverflow.com/questions/39048796/function-declarations-or-expressions-for-class-methods
 
 # 렉시컬 스코프 알아보자
 
