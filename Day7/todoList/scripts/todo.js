@@ -51,7 +51,7 @@ class Model {
 }
 
 // add, delete, edit, check 등의 이벤트가 일어나는 View class
-class EventTodoView {
+class TodoView {
   constructor({ todoForm, ulTodoList, todoModel }) {
     this.listId = 1;
     this.ulTodoList = ulTodoList;
@@ -139,29 +139,24 @@ class EventTodoView {
       </form>`;
     return newForm;
   }
-}
-//model에서 정보를 받아와 render시키는 view Class
-class RenderTodoView {
-  constructor({ eventTodoView, todoModel }) {
-    this.todoModel = todoModel;
-    this.eventTodoView = eventTodoView;
-  }
   renderTodo() {
     const todoArray = this.todoModel.getTodoList();
-    todoArray.forEach((todo) => this.eventTodoView.createLi(todo.value));
+    todoArray.forEach((todo) => this.createLi(todo.value));
   }
 }
-
 /*
 1. storage class를 통해 localStorage를 사용하게 하는 객체를 생성
 2. todoList를 다룰 model을 생성.
   2-1. todoList가 변경 될 시 storage에 저장을 해준다.
-3. event View처리를 맡은 eventTodoView 객체생성
+3. View처리를 맡은 TodoView 객체생성
+  3-1. 새로고침 시 model로부터 정보를 받아와 render
   3-1. form에서 제출되면 list를 추가한다.
   3-2. check,edit,delete event가 일어나면 li를 업데이트, 삭제 한다. 
   3-3. evnet 처리가 일어날 때 변경되는 데이터를 model에 넘겨준다.
-4. 새로고침 될 때 model로 부터 정보를 받아와 render한다.
+
+?ㅁ? 새로고침 될 때 model로 부터 정보를 받아와 render한다. 
     이 과정에서 eventTodoView에 있는 createLi 메소드가 필요해 받아와서 사용하지만,,, 좋은 방법인지에 대한 의문은 있다...
+    나누었었지만 다시 합쳤다. 고민이 되기 때문에 이 주석은 남겨두고 계속 생각해봐야곘다.
 */
 
 function init() {
@@ -170,10 +165,9 @@ function init() {
   const ulTodoList = document.getElementById("js-todoList");
   const localStorage = new Storage(window.localStorage);
   const todoModel = new Model(localStorage, STORAGE_KEY);
-  const eventTodoView = new EventTodoView({ todoForm, ulTodoList, todoModel });
-  const todoView = new RenderTodoView({ eventTodoView, todoModel });
+  const todoView = new TodoView({ todoForm, ulTodoList, todoModel });
   todoView.renderTodo();
-  eventTodoView.init();
+  todoView.init();
 }
 
 init();
