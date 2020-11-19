@@ -1,19 +1,31 @@
+class Storage {
+  constructor(storage) {
+    this.storage = storage;
+  }
+  get(key) {
+    const storageValue = this.storage.getItem(key);
+    if (!storageValue) return [];
+    else return JSON.parse(storageValue);
+  }
+  save(storageKey, parsedArray) {
+    this.storage.setItem(storageKey, JSON.stringify(parsedArray));
+  }
+}
+
 class Model {
-  constructor(storageKey) {
+  constructor(storage, storageKey) {
     this.todoArray = [];
+    this.storage = storage;
     this.storageKey = storageKey;
   }
   addItem(id, todo) {
     const newTodo = { key: id, value: todo };
     this.todoArray.push(newTodo);
-    this.saveStorage();
+    this.storage.save(this.storageKey, this.todoArray);
   }
   deleteItem(id) {
     this.todoArray = this.todoArray.filter((v) => v.key !== Number(id));
-    this.saveStorage();
-  }
-  saveStorage() {
-    localStorage.setItem(this.storageKey, JSON.stringify(this.todoArray));
+    this.storage.save(this.storageKey, this.todoArray);
   }
   getTodoList() {
     this.resetTodoArray();
@@ -25,15 +37,13 @@ class Model {
         v.value = editedTodo;
       }
     });
-    this.saveStorage();
+    this.storage.save(this.storageKey, this.todoArray);
   }
   resetTodoArray() {
-    let stringStorage = localStorage.getItem(this.storageKey);
-    if (stringStorage === null) stringStorage = "[]";
-    const parsedStorage = JSON.parse(stringStorage);
+    const parsedStorage = this.storage.get(this.storageKey);
     parsedStorage.forEach((item, idx) => (item.key = idx + 1));
     this.todoArray = parsedStorage;
-    this.saveStorage();
+    this.storage.save(this.storageKey, this.todoArray);
   }
 }
 
@@ -136,7 +146,8 @@ function init() {
   const STORAGE_KEY = "todo";
   const todoForm = document.getElementById("js-todo__form");
   const ulTodoList = document.getElementById("js-todoList");
-  const todoModel = new Model(STORAGE_KEY);
+  const localStorage = new Storage(window.localStorage);
+  const todoModel = new Model(localStorage, STORAGE_KEY);
   const todoView = new RenderTodoView({ todoForm, ulTodoList, todoModel });
   const eventTodoView = new EventTodoView({ ulTodoList, todoModel });
   todoView.renderTodo();
