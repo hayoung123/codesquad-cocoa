@@ -99,23 +99,22 @@ class TodoView {
     li.remove();
   }
   editTodo(target) {
-    this.updateEditBtn(target);
+    this.updateEditBtn(this.getEditBtn(target));
     const todoText = this.getTodoText(target);
     const editForm = this.createForm(todoText.innerText);
     todoText.innerHTML = editForm;
     todoText.addEventListener("submit", this.editConfirm.bind(this));
   }
   editConfirm({ target }) {
-    this.updateEditBtn(target);
+    this.updateEditBtn(this.getEditBtn(target));
     const editedTodo = target.todo.value;
     const todoText = this.getTodoText(target);
     const li = this.getLi(target);
     todoText.innerHTML = editedTodo;
     this.todoModel.editItem(li.id, editedTodo);
   }
-  updateEditBtn(target) {
+  updateEditBtn(editBtn) {
     const HIDDEN = "hidden";
-    const editBtn = this.getEditBtn(target);
     if (editBtn.classList.contains(HIDDEN)) editBtn.classList.remove(HIDDEN);
     else editBtn.classList.add(HIDDEN);
   }
