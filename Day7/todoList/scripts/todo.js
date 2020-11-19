@@ -45,14 +45,14 @@ class RenderTodoView {
     this.ulTodoList = ulTodoList;
   }
   init() {
-    this.todoForm.addEventListener("submit", this.handleSubmit);
+    this.todoForm.addEventListener("submit", this.handleSubmit.bind(this));
   }
-  handleSubmit = ({ target: { todo } }) => {
+  handleSubmit({ target: { todo } }) {
     const todoValue = todo.value;
     todo.value = "";
     this.todoModel.addItem(this.listId, todoValue);
     this.createLi(todoValue);
-  };
+  }
   createLi(todo) {
     const template = `<li id=${this.listId++}>
       <input type="checkbox" class="check__input"><span id='todo__text'>${todo}</span>
@@ -77,16 +77,16 @@ class EventTodoView {
     this.todoModel = todoModel;
   }
   init() {
-    this.ulTodoList.addEventListener("click", this.handleClick);
+    this.ulTodoList.addEventListener("click", this.handleClick.bind(this));
   }
-  handleClick = ({ target }) => {
+  handleClick({ target }) {
     const CHECK_BOX = "check__input";
     const DELETE_BTN = "delete__btn";
     const EDIT_BTN = "edit__btn";
     if (target.className === CHECK_BOX) this.lineThrough(target);
     else if (target.id === DELETE_BTN) this.deleteTodo(target);
     else if (target.id === EDIT_BTN) this.editTodo(target);
-  };
+  }
   lineThrough(target) {
     const todo = target.nextSibling;
     const LINE = "lineThrough";
@@ -104,9 +104,9 @@ class EventTodoView {
     const todoText = this.getTodoText(target);
     const editForm = this.createForm(todoText.innerText);
     todoText.innerHTML = editForm;
-    todoText.addEventListener("submit", this.editConfirm);
+    todoText.addEventListener("submit", this.editConfirm.bind(this));
   }
-  editConfirm = ({ target }) => {
+  editConfirm({ target }) {
     const HIDDEN = "hidden";
     const editedTodo = target.todo.value;
     const todoText = this.getTodoText(target);
@@ -115,7 +115,7 @@ class EventTodoView {
     todoText.innerHTML = editedTodo;
     editBtn.classList.remove(HIDDEN);
     this.todoModel.editItem(li.id, editedTodo);
-  };
+  }
   getTodoText(target) {
     const li = target.closest("li");
     const todoText = li.firstElementChild.nextSibling;

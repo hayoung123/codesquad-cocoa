@@ -39,5 +39,5 @@ class person {
     console.log(`Hi ${this.name}`);
   };
 }
-
+queryselector;
 person.sayHi(); // Hi Lee
