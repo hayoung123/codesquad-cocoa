@@ -55,7 +55,8 @@ class RenderTodoView {
   }
   createLi(todo) {
     const template = `<li id=${this.listId++}>
-      <input type="checkbox" class="check__input"><span id='todo__text'>${todo}</span>
+      <input type="checkbox" class="check__input">
+      <span id='todo__text'>${todo}</span>
       <div class="list__btn">
         <i class="far fa-edit edit__btn" id="edit__btn"></i>
         <i class="fas fa-trash-alt delete__btn" id="delete__btn"></i>
@@ -86,13 +87,13 @@ class EventTodoView {
     else if (target.id === EDIT_BTN) this.editTodo(target);
   }
   lineThrough(target) {
-    const todo = target.nextSibling;
+    const todo = this.getTodoText(target);
     const LINE = "lineThrough";
     if (target.checked) todo.classList.add(LINE);
     else todo.classList.remove(LINE);
   }
   deleteTodo(target) {
-    const li = target.closest("li");
+    const li = this.getLi(target);
     this.todoModel.deleteItem(li.id);
     li.remove();
   }
@@ -108,15 +109,18 @@ class EventTodoView {
     const HIDDEN = "hidden";
     const editedTodo = target.todo.value;
     const todoText = this.getTodoText(target);
-    const li = todoText.parentNode;
+    const li = this.getLi(target);
     const editBtn = li.lastElementChild.firstElementChild;
     todoText.innerHTML = editedTodo;
     editBtn.classList.remove(HIDDEN);
     this.todoModel.editItem(li.id, editedTodo);
   }
+  getLi(target) {
+    return target.closest("li");
+  }
   getTodoText(target) {
-    const li = target.closest("li");
-    const todoText = li.firstElementChild.nextSibling;
+    const li = this.getLi(target);
+    const todoText = li.firstElementChild.nextElementSibling;
     return todoText;
   }
   createForm(todo) {
