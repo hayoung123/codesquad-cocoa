@@ -70,22 +70,24 @@ class TodoView {
   }
   createLi(todo) {
     const template = `<li id=${this.listId++}>
-      <input type="checkbox" class="check__input">
+      <input type="checkbox" data-action='check'>
       <span id='todo__text'>${todo}</span>
       <div class="list__btn">
-        <i class="far fa-edit edit__btn" id="edit__btn"></i>
-        <i class="fas fa-trash-alt delete__btn" id="delete__btn"></i>
+        <i class="far fa-edit edit__btn" data-action='edit'></i>
+        <i class="fas fa-trash-alt delete__btn" data-action='delete'></i>
       </div>
     </li>`;
     this.ulTodoList.innerHTML = template + this.ulTodoList.innerHTML;
   }
   handleClick({ target }) {
-    const CHECK_BOX = "check__input";
-    const DELETE_BTN = "delete__btn";
-    const EDIT_BTN = "edit__btn";
-    if (target.className === CHECK_BOX) this.lineThrough(target);
-    else if (target.id === DELETE_BTN) this.deleteTodo(target);
-    else if (target.id === EDIT_BTN) this.editTodo(target);
+    console.dir(target.dataset.action);
+    const action = target.dataset.action;
+    const CHECK = "check";
+    const DELETE = "delete";
+    const EDIT = "edit";
+    if (action === CHECK) this.lineThrough(target);
+    else if (action === DELETE) this.deleteTodo(target);
+    else if (action === EDIT) this.editTodo(target);
   }
   lineThrough(target) {
     const todo = this.getTodoText(target);
@@ -120,6 +122,7 @@ class TodoView {
   }
   getEditBtn(target) {
     const li = this.getLi(target);
+    console.log(li.lastElementChild.firstElementChild);
     return li.lastElementChild.firstElementChild;
   }
   getLi(target) {
