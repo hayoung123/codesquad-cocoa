@@ -13,3 +13,8 @@
   width: 100px;
   background-color: green;
 }
+
+div {
+  color: white;
+  padding: 20px;
+}
