@@ -80,7 +80,6 @@ class TodoView {
     this.ulTodoList.innerHTML = template + this.ulTodoList.innerHTML;
   }
   handleClick({ target }) {
-    console.dir(target.dataset.action);
     const action = target.dataset.action;
     const CHECK = "check";
     const DELETE = "delete";
@@ -103,9 +102,9 @@ class TodoView {
   editTodo(target) {
     this.updateEditBtn(this.getEditBtn(target));
     const todoText = this.getTodoText(target);
-    const editForm = this.createForm(todoText.innerText);
-    todoText.innerHTML = editForm;
-    todoText.addEventListener("submit", this.editConfirm.bind(this));
+    todoText.innerHTML = this.createForm(todoText.innerText);
+    const editForm = todoText.firstElementChild;
+    editForm.addEventListener("submit", this.editConfirm.bind(this));
   }
   editConfirm({ target }) {
     this.updateEditBtn(this.getEditBtn(target));
@@ -122,7 +121,6 @@ class TodoView {
   }
   getEditBtn(target) {
     const li = this.getLi(target);
-    console.log(li.lastElementChild.firstElementChild);
     return li.lastElementChild.firstElementChild;
   }
   getLi(target) {
