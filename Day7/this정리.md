@@ -171,7 +171,7 @@ obj.sayHello.bind(obj2)(); //kelly
 
 ## addEventListener 사용시 콜백함수의 this
 
-`addEventListener` 를 사용해서 콜백 함수를 호출할 때 콜백함수는 addEventLisener를 호출하는 즉, 트리거가 되는 객체가 this 로 바인딩 돼 들어간다.
+`addEventListener` 를 사용해서 콜백 함수를 호출할 때 콜백함수는 addEventLisener를 호출하는 즉, currentTarget 객체가 this 로 바인딩 돼 들어간다.
 
 이러한 현상은 코딩할 때 혼동을 주기 마련이다.
 
