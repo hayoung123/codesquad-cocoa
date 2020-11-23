@@ -1,0 +1,29 @@
+.dropdown__wrapper {
+  width: 210px;
+}
+.list__title {
+  width: 210px;
+  height: 50px;
+  border: 1px solid black;
+  text-align: center;
+  line-height: 50px;
+}
+
+ul {
+  padding: 0;
+  margin: 0;
+  margin-top: 10px;
+}
+li {
+  background-color: #deb887;
+  list-style: none;
+  width: 200px;
+  height: 30px;
+  margin-bottom: 10px;
+  line-height: 30px;
+  padding-left: 10px;
+}
+
+.hidden {
+  display: none;
+}
