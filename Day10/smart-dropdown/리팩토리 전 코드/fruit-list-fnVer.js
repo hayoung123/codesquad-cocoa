@@ -36,11 +36,9 @@ dropWrapper.addEventListener("mouseleave", () => {
 
 function showList() {
   listContainer.classList.remove(HIDDEN);
-  fruitContainer.classList.remove(HIDDEN);
 }
 function hideList() {
   listContainer.classList.add(HIDDEN);
-  fruitContainer.classList.add(HIDDEN);
 }
 
 // fruit counter
@@ -53,7 +51,7 @@ function selectFruit({ target }) {
   const targetKey = target.innerText;
   if (target.tagName === "LI") {
     timeout = setInterval(function () {
-      renderFruitCount(targetKey);
+      renderCount(targetKey);
     }, 500);
   }
 }
@@ -62,7 +60,7 @@ function cancelSelect() {
 }
 
 //fruitList 업데이트 및 fruitContainer 업데이트
-function renderFruitCount(fruit) {
+function renderCount(fruit) {
   updateFruitList(fruit);
   updateFruitContainer();
 }
@@ -76,7 +74,7 @@ function updateFruitList(fruit) {
       isFruit = true;
     }
   });
-  if (fur) if (isFruit === false) fruitList.push({ key: fruit, value: 1 });
+  if (isFruit === false) fruitList.push({ key: fruit, value: 1 });
 }
 
 //makeDiv통해 만든 template로 fruitContainer에 넣기

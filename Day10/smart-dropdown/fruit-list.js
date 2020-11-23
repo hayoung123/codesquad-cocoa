@@ -92,6 +92,7 @@ class FruitCountView {
   }
 }
 
+//태그 선택 간략화
 const tag = {
   selector(selector, base = document) {
     return base.querySelector(selector);
