@@ -28,7 +28,11 @@
 // setTimeout(() => console.log("hello3"), 1000);
 // setTimeout(() => console.log("hello4"), 1000);
 
-const first = document.getElementById("1");
-first.addEventListener("mouseover", () => {
-  setTimeout(() => console.log("hello"), 1);
-});
+// const first = document.getElementById("1");
+// first.addEventListener("mouseover", () => {
+//   setTimeout(() => console.log("hello"), 1);
+// });
+
+// console.log(1);
+// setTimeout(() => console.log(2), 1000);
+// console.log(3);
