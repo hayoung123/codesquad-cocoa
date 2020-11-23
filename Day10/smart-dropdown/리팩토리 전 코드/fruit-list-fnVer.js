@@ -76,7 +76,7 @@ function updateFruitList(fruit) {
       isFruit = true;
     }
   });
-  if (isFruit === false) fruitList.push({ key: fruit, value: 1 });
+  if (fur) if (isFruit === false) fruitList.push({ key: fruit, value: 1 });
 }
 
 //makeDiv통해 만든 template로 fruitContainer에 넣기
