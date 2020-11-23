@@ -23,7 +23,12 @@
 
 // asyncRun(baseData, (idx) => console.log(idx));
 
-setTimeout(() => console.log("hello1"), 1000);
-setTimeout(() => console.log("hello2"), 1000);
-setTimeout(() => console.log("hello3"), 1000);
-setTimeout(() => console.log("hello4"), 1000);
+// setTimeout(() => console.log("hello1"), 1000);
+// setTimeout(() => console.log("hello2"), 1000);
+// setTimeout(() => console.log("hello3"), 1000);
+// setTimeout(() => console.log("hello4"), 1000);
+
+const first = document.getElementById("1");
+first.addEventListener("mouseover", () => {
+  setTimeout(() => console.log("hello"), 1);
+});
