@@ -12,13 +12,14 @@ class FruitModel {
     return this.fruitMap;
   }
 }
-
+//fruit list 보여주는 View
 class FruitListView {
   constructor({ menuWrapper, listContainer }) {
     this.timeout;
     this.menuWrapper = menuWrapper;
     this.listContainer = listContainer;
   }
+  //addEventListener 의 this 바인딩을 피해 bind함수 사용
   init() {
     menuWrapper.addEventListener(
       "mouseenter",
@@ -31,14 +32,14 @@ class FruitListView {
   }
   //setTimeout이 브라우저 함수여서 this가 window에 바인드돼 bind 사용
   handleMouseEnter() {
-    this.timeout = window.setTimeout(this.showList.bind(this), 1000);
+    this.timeout = setTimeout(this.showList.bind(this), 1000);
   }
   showList() {
     const HIDDEN = "hidden";
     this.listContainer.classList.remove(HIDDEN);
   }
   handleMouseLeave() {
-    window.clearTimeout(this.timeout);
+    clearTimeout(this.timeout);
     this.hideList();
   }
   hideList() {
@@ -47,6 +48,7 @@ class FruitListView {
   }
 }
 
+//counter 보여주는 view
 class FruitCountView {
   constructor({ fruitModel, listContainer, fruitCounter }) {
     this.timeout;
@@ -54,6 +56,7 @@ class FruitCountView {
     this.listContainer = listContainer;
     this.fruitCounter = fruitCounter;
   }
+  //addEventListener 의 this 바인딩을 피해 bind함수 사용
   init() {
     this.listContainer.addEventListener(
       "mouseover",
@@ -78,6 +81,7 @@ class FruitCountView {
     this.fruitModel.setFruit(fruit);
     this.renderfruitCounter();
   }
+  //Map의 forEach는 (value,key) 로 인자를 받는다.
   renderfruitCounter() {
     let template = "";
     const fruitMap = this.fruitModel.getFruit();
