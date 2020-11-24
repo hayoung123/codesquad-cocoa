@@ -51,12 +51,12 @@ let countTimeout = null;
 //li에 mouseover되면 setInterval 시작 (파라미터를 넘겨주기 위해 익명함수의 내장함수로 render함수 사용)
 function selectFruit({ target }) {
   const targetKey = target.innerText;
-  if (target.tagName === "LI" && countTimeout === null) {
+  if (target.tagName === "LI" && !countTimeout) {
     countTimeout = setTimeout(function () {
       renderCount(targetKey);
       countTimeout = null;
     }, 500);
-  } else if (target.tagName !== "LI" && countTimeout !== null) {
+  } else if (target.tagName !== "LI" && countTimeout) {
     clearTimeout(countTimeout);
     countTimeout = null;
   }

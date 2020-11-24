@@ -69,9 +69,9 @@ class FruitCountView {
   //setTimeout의 window 바인딩과 pass parameter하기 위해 bind 사용
   handleMouseMove({ target }) {
     const targetFruit = target.innerText;
-    if (target.tagName === "LI" && this.timeout === null) {
+    if (target.tagName === "LI" && !this.timeout) {
       this.timeout = setTimeout(this.renderCount.bind(this, targetFruit), 500);
-    } else if (target.tagName !== "LI" && this.timeout !== null) {
+    } else if (target.tagName !== "LI" && this.timeout) {
       this.cancelCount();
     }
   }
