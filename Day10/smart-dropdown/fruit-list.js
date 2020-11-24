@@ -14,10 +14,11 @@ class FruitModel {
 }
 //fruit list 보여주는 View
 class FruitListView {
-  constructor({ menuWrapper, listContainer }) {
+  constructor({ menuWrapper, listContainer, fruitCounter }) {
     this.timeout;
     this.menuWrapper = menuWrapper;
     this.listContainer = listContainer;
+    this.fruitCounter = fruitCounter;
   }
   //addEventListener 의 this 바인딩을 피해 bind함수 사용
   init() {
@@ -37,6 +38,7 @@ class FruitListView {
   showList() {
     const HIDDEN = "hidden";
     this.listContainer.classList.remove(HIDDEN);
+    this.fruitCounter.classList.remove(HIDDEN);
   }
   handleMouseLeave() {
     clearTimeout(this.timeout);
@@ -45,13 +47,14 @@ class FruitListView {
   hideList() {
     const HIDDEN = "hidden";
     this.listContainer.classList.add(HIDDEN);
+    this.fruitCounter.classList.add(HIDDEN);
   }
 }
 
 //counter 보여주는 view
 class FruitCountView {
   constructor({ fruitModel, listContainer, fruitCounter }) {
-    this.timeout;
+    this.timeout = null;
     this.fruitModel = fruitModel;
     this.listContainer = listContainer;
     this.fruitCounter = fruitCounter;
@@ -59,27 +62,28 @@ class FruitCountView {
   //addEventListener 의 this 바인딩을 피해 bind함수 사용
   init() {
     this.listContainer.addEventListener(
-      "mouseover",
-      this.handleMouseOver.bind(this)
+      "mousemove",
+      this.handleMouseMove.bind(this)
     );
-    this.listContainer.addEventListener(
-      "mouseout",
-      this.handleMouseOut.bind(this)
-    );
-  }
-  handleMouseOut() {
-    clearInterval(this.timeout);
   }
   //setTimeout의 window 바인딩과 pass parameter하기 위해 bind 사용
-  handleMouseOver({ target }) {
+  handleMouseMove({ target }) {
     const targetFruit = target.innerText;
-    if (target.tagName === "LI") {
-      this.timeout = setInterval(this.renderCount.bind(this, targetFruit), 500);
+    if (target.tagName === "LI" && this.timeout === null) {
+      this.timeout = setTimeout(this.renderCount.bind(this, targetFruit), 500);
+    } else if (target.tagName !== "LI" && this.timeout !== null) {
+      this.cancelCount();
     }
   }
+  cancelCount() {
+    clearTimeout(this.timeout);
+    this.timeout = null;
+  }
+
   renderCount(fruit) {
     this.fruitModel.setFruit(fruit);
     this.renderfruitCounter();
+    this.timeout = null;
   }
   //Map의 forEach는 (value,key) 로 인자를 받는다.
   renderfruitCounter() {
@@ -116,7 +120,8 @@ FruitCountView : fruit count 보여주는 view
 
 - Fruit counter
 
-1. li에 mouseover 되면 setInterval 시작 -renderFruitCounter
+1. mousemove중 li를 만나면 renderCount() 하지만, 
+  renderCount가 timeout에서 진행 중에 mouse가 li를 벗어나면, cleatTimeout으로 renderCount취소
 2. renderFruitCounter
     2-1 model에서 Map 업데이트 
     2-2 renderFruitRender에서 template만들어서 fruitCounter에 넣기
@@ -130,6 +135,7 @@ const fruitModel = new FruitModel();
 const fruitListView = new FruitListView({
   menuWrapper,
   listContainer,
+  fruitCounter,
 });
 const fruitCountView = new FruitCountView({
   fruitModel,

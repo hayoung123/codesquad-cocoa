@@ -45,20 +45,21 @@ function hideList() {
 
 // fruit counter
 
-listContainer.addEventListener("mouseover", selectFruit);
-listContainer.addEventListener("mouseout", cancelSelect);
+listContainer.addEventListener("mousemove", selectFruit);
+let countTimeout = null;
 
 //li에 mouseover되면 setInterval 시작 (파라미터를 넘겨주기 위해 익명함수의 내장함수로 render함수 사용)
 function selectFruit({ target }) {
   const targetKey = target.innerText;
-  if (target.tagName === "LI") {
-    timeout = setInterval(function () {
+  if (target.tagName === "LI" && countTimeout === null) {
+    countTimeout = setTimeout(function () {
       renderCount(targetKey);
+      countTimeout = null;
     }, 500);
+  } else if (target.tagName !== "LI" && countTimeout !== null) {
+    clearTimeout(countTimeout);
+    countTimeout = null;
   }
-}
-function cancelSelect() {
-  clearInterval(timeout);
 }
 
 //fruitList 업데이트 및 fruitContainer 업데이트
