@@ -55,7 +55,7 @@ function selectFruit({ target }) {
     countTimeout = setTimeout(function () {
       renderCount(targetKey);
       countTimeout = null;
-    }, 500);
+    }, 300);
   } else if (target.tagName !== "LI" && countTimeout) {
     clearTimeout(countTimeout);
     countTimeout = null;
