@@ -55,6 +55,4 @@ const template = makeDiv("", "wrapper");
 const townTemplate = setTemplate(0, template);
 townMap.appendChild(townTemplate);
 
-function placeContainTown () {
-  
-}
+function placeContainTown() {}
