@@ -1,8 +1,8 @@
-function makeDiv(num, divType) {
+function makeDiv(townName, divType) {
   const random = Math.random();
   const div = document.createElement("div");
   if (divType) div.className = divType;
-  div.innerHTML = `<span>${num}</span>`;
+  div.innerHTML = `<span>${townName}</span>`;
   if (random < 0.3 && divType !== "wrapper") {
     div.innerHTML += '<i class="far fa-envelope"></i>';
     mailTown.push(div);

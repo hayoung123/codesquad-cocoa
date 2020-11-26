@@ -1,0 +1,19 @@
+body {
+  margin-left: 30px;
+}
+.town-map {
+  width: 50vh;
+  height: 50vh;
+  border: 1px solid black;
+}
+.container {
+  position: absolute;
+  border: 1px solid red;
+  margin: 10px;
+  padding: 10px;
+}
+.town {
+  border: 1px solid blue;
+  padding: 3px;
+  margin: 3px;
+}
