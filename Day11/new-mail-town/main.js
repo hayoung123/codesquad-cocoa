@@ -2,10 +2,11 @@ class Model {
   constructor() {
     // this.townList = this.setTown();
     this.townList = ["A", "B", "C", "D", "E", "F", "G", "h", "I"];
-    this.map = this.createObj("map", "wrapper");
+    this.map = this.createObj("", "wrapper");
   }
   getTownMap() {
     const townMap = this.bulidTown(0, this.map);
+    this.setSize([townMap]);
     return [townMap];
   }
   setTown() {
@@ -15,7 +16,7 @@ class Model {
     }
     return towns;
   }
-  createObj(name, townType, width, height) {
+  createObj(name, townType) {
     const obj = {
       name: name,
       townType: townType,
@@ -43,21 +44,50 @@ class Model {
     }
     return node;
   }
-  searchArr(findType, data, dataList = []) {
-    if (data.length === 0) return;
+  // searchArr(findType, data, dataList = []) {
+  //   if (data.length === 0) return;
+  //   else {
+  //     for (const key in data) {
+  //       if (data[key].townType === findType) dataList.push(data[key].name);
+  //       this.searchArr(findType, data[key].child, dataList);
+  //     }
+  //   }
+  //   return dataList;
+  // }
+
+  setSize(towns, width, height) {
+    if (towns.length === 0) return;
     else {
-      for (const key in data) {
-        if (data[key].townType === findType) dataList.push(data[key].name);
-        this.searchArr(findType, data[key].child, dataList);
+      for (const key in towns) {
+        if (towns[key].townType === "wrapper") {
+          this.setSize(towns[key].child, 700, 700);
+          continue;
+        }
+        const widthMax = width / towns.length;
+        const heightMax = height / towns.length;
+        let widthMin = widthMax / 2;
+        let heightMin = heightMax / 2;
+        if (towns[key].townType === "container") {
+          widthMin = widthMax * 0.9;
+          heightMin = heightMax * 0.9;
+        }
+        const newWidth = this.randomNum(widthMax, widthMin);
+        const newHeight = this.randomNum(heightMax, heightMin);
+        towns[key].width = newWidth;
+        towns[key].height = newHeight;
+        this.setSize(towns[key].child, newWidth, newHeight);
       }
     }
-    return dataList;
+    return towns;
   }
 
-  getSize;
-
   randomNum(max, min) {
-    return Math.random() * (max - min) + min;
+    const randomNum = Math.random() * (max - min) + min;
+    if (randomNum > 0) return randomNum;
+    else {
+      음수;
+      return Math.random() * -(max - min) + min;
+    }
   }
 }
 
@@ -70,13 +100,14 @@ class TownView {
   init() {
     this.buildMap(this.townMap, this.wrapper);
   }
-  createDiv({ name, townType, mail }) {
+  createDiv({ name, townType, width, height, mail }) {
     const template =
       mail !== undefined
-        ? `<span>${name}</span><i class="far fa-envelope"></i><div></div>`
-        : `<span>${name}</span><div></div>`;
+        ? `<span>${name}</span><i class="far fa-envelope"></i><div style="width:${width}px; height:${height}px;"></div>`
+        : `<span>${name}</span><div style="width:${width}px; height:${height}px;"></div>`;
     const div = document.createElement("div");
-    console.log(townType);
+    div.style.width = `${width}px`;
+    div.style.height = `${height}px`;
     div.className = townType;
     div.innerHTML = template;
     return div;
@@ -87,7 +118,7 @@ class TownView {
     else {
       for (let x in towns) {
         const newTown = this.createDiv(towns[x]);
-        if (towns[x].name === "map") {
+        if (towns[x].townType === "wrapper") {
           node.appendChild(newTown);
         } else {
           node.lastElementChild.appendChild(newTown);
@@ -99,8 +130,6 @@ class TownView {
 }
 
 const model = new Model();
-// const list = a.searchArr("container", [townMap]);
-
 const view = new TownView(model);
 view.init();
 // const wrapper
