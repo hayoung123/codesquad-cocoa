@@ -11,7 +11,7 @@ class Model {
   }
   setTown() {
     const towns = [];
-    for (let i = 65; i <= Math.random() * (75 - 65) + 65; i++) {
+    for (let i = 65; i <= Math.random() * (90 - 75) + 75; i++) {
       towns.push(String.fromCharCode(i));
     }
     return towns;
@@ -104,49 +104,49 @@ class TownView {
     this.buildMap(this.townMap, this.wrapper);
     const wrapper = document.querySelector(".wrapper");
     this.countChildNode(wrapper);
-    console.log("cnt", this.containerCnt);
+    this.setSize(wrapper, wrapper.offsetWidth, wrapper.offsetHeight);
+    const containers = document.querySelectorAll(".container");
+    this.setPosition(containers);
   }
-  createDiv({ name, townType, width, height, mail }) {
+  createDiv({ name, townType, mail }) {
     const div = document.createElement("div");
-    div.style.width = `${width}px`;
-    div.style.height = `${height}px`;
-    div.className = townType;
+    div.classList.add(townType);
     div.innerHTML = name;
     return div;
   }
+  setPosition(containers) {
+    containers.forEach((container) => {
+      container.style.marginTop = `${Math.random() * 20 + 1}px`;
+      container.style.marginBottm = `${Math.random() * 20 + 1}px`;
+    });
+  }
   setSize(towns, width, height) {
-    if (towns.length === 0) return;
-    else {
-      for (const town of towns) {
-        if (town.classList[0] === "wrapper") {
-          this.setSize(town.child, width, height);
-          continue;
-        }
-        if (towns[key].townType === "container") {
-          widthMin = widthMax * 0.9;
-          heightMin = heightMax * 0.9;
-        }
-        const widthMax = width / towns.length;
-        const heightMax = height / towns.length;
-        let widthMin = widthMax / 2;
-        let heightMin = heightMax / 2;
-        const newWidth = this.randomNum(widthMax, widthMin);
-        const newHeight = this.randomNum(heightMax, heightMin);
-        towns[key].width = newWidth;
-        towns[key].height = newHeight;
-        this.setSize(towns[key].child, newWidth, newHeight);
+    if (!towns.children.length) return;
+    for (let i = 0; i < towns.children.length; i++) {
+      const classType = towns.children[i].classList[0];
+      const widthMax = ((width - 16) / towns.children.length) * 0.9;
+      const heightMax = ((height - 16) / towns.children.length) * 0.9;
+      const widthMin = widthMax * 0.7;
+      const heightMin = heightMax * 0.7;
+      let newWidth = this.randomNum(widthMax, widthMin);
+      let newHeight = this.randomNum(heightMax, heightMin);
+      if (classType === "container") {
+        const totNode = this.containerCnt.reduce((a, b) => a + b);
+        newWidth = width * (this.containerCnt[i] / totNode) * 0.9;
+        newHeight = height * (this.containerCnt[i] / totNode) * 0.9;
       }
+      towns.children[i].style.width = newWidth + "px";
+      towns.children[i].style.height = newHeight + "px";
+      this.setSize(towns.children[i], newWidth, newHeight);
     }
-    return towns;
   }
 
   randomNum(max, min) {
-    const randomNum = Math.random() * (max - min) + min;
-    if (randomNum > 0) return randomNum;
-    else {
-      음수;
-      return Math.random() * -(max - min) + min;
+    let randomNum = Math.random() * (max - min) + min;
+    while (randomNum < 0) {
+      randomNum = Math.random() * (max - min) + min;
     }
+    return randomNum;
   }
 
   buildMap(towns, node) {
@@ -163,9 +163,6 @@ class TownView {
     if (!node.children.length) return;
     for (const x of node.children) {
       this.count++;
-      console.log(x.classList);
-      console.log(this.count);
-      console.log("-------------------------------------");
       this.countChildNode(x);
       if (x.classList[0] === "container") {
         this.containerCnt.push(this.count);
