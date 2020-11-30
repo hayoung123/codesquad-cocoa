@@ -1,85 +1,162 @@
+class TetrisModel {}
 class TetrisShape {
   constructor() {
     this.shape = [
       {
-        name: "M",
-        location: [
-          [-1, 0],
-          [0, 0],
-          [1, 0],
-          [2, 0],
-        ],
+        name: "I",
         color: "red",
+        location: [
+          [
+            [0, 0],
+            [1, 0],
+            [2, 0],
+            [3, 0],
+          ],
+          [
+            [0, 0],
+            [0, 1],
+            [0, 2],
+            [0, 3],
+          ],
+        ],
       },
       {
-        name: "I",
+        name: "O",
         location: [
-          [0, 0],
-          [0, 1],
-          [0, 2],
-          [0, 3],
+          [
+            [0, 0],
+            [1, 0],
+            [0, 1],
+            [1, 1],
+          ],
         ],
         color: "orange",
       },
       {
         name: "T",
         location: [
-          [0, 0],
-          [-1, 1],
-          [0, 1],
-          [1, 1],
+          [
+            [1, 0],
+            [0, 1],
+            [1, 1],
+            [2, 1],
+          ],
+          [
+            [1, 0],
+            [1, 1],
+            [1, 2],
+            [2, 1],
+          ],
+          [
+            [0, 1],
+            [1, 1],
+            [1, 2],
+            [2, 1],
+          ],
+          [
+            [1, 0],
+            [0, 1],
+            [1, 1],
+            [1, 2],
+          ],
         ],
         color: "yellow",
       },
       {
         name: "L",
         location: [
-          [0, 0],
-          [0, 1],
-          [0, 2],
-          [1, 2],
+          [
+            [1, 0],
+            [1, 1],
+            [1, 2],
+            [2, 2],
+          ],
+          [
+            [0, 2],
+            [0, 1],
+            [1, 1],
+            [2, 1],
+          ],
+          [
+            [0, 0],
+            [1, 0],
+            [1, 1],
+            [1, 2],
+          ],
+          [
+            [0, 1],
+            [1, 1],
+            [2, 1],
+            [2, 0],
+          ],
         ],
         color: "green",
       },
       {
         name: "J",
         location: [
-          [1, 0],
-          [1, 1],
-          [1, 2],
-          [0, 2],
+          [
+            [1, 0],
+            [1, 1],
+            [1, 2],
+            [0, 2],
+          ],
+          [
+            [0, 0],
+            [0, 1],
+            [1, 1],
+            [2, 1],
+          ],
+          [
+            [1, 0],
+            [1, 1],
+            [1, 2],
+            [2, 0],
+          ],
+          [
+            [0, 1],
+            [1, 1],
+            [2, 1],
+            [2, 2],
+          ],
         ],
         color: "blue",
       },
       {
         name: "S",
         location: [
-          [0, 0],
-          [1, 0],
-          [-1, 1],
-          [0, 1],
+          [
+            [1, 0],
+            [2, 0],
+            [0, 1],
+            [1, 1],
+          ],
+          [
+            [0, 0],
+            [0, 1],
+            [1, 1],
+            [1, 2],
+          ],
         ],
         color: "navy",
       },
       {
         name: "Z",
         location: [
-          [-1, 0],
-          [0, 0],
-          [0, 1],
-          [1, 1],
+          [
+            [0, 0],
+            [1, 0],
+            [1, 1],
+            [2, 1],
+          ],
+          [
+            [1, 0],
+            [0, 1],
+            [1, 1],
+            [0, 2],
+          ],
         ],
-        color: "orange",
-      },
-      {
-        name: "O",
-        location: [
-          [0, 0],
-          [1, 0],
-          [0, 1],
-          [1, 1],
-        ],
-        color: "green",
+        color: "purple",
       },
     ];
   }
@@ -92,6 +169,8 @@ class TetrisView {
   constructor(shapeList) {
     this.shapeList = shapeList;
     this.shape;
+    this.changeCnt = 0;
+    this.shapeWidth = 0;
     this.cellSize = 30;
     this.startLeft = 90;
     this.startTop = 0;
@@ -99,11 +178,12 @@ class TetrisView {
     this.context = this.canvas.getContext("2d");
   }
   random() {
-    const random = Math.floor(Math.random() * 7);
+    const random = Math.floor(Math.random() * 6);
     this.shape = this.shapeList[random];
   }
   init() {
     this.random();
+    console.log(this.shape);
     this.createGrid();
     this.createShape(this.shape.color);
     document.addEventListener("keydown", this.handleKeydown.bind(this));
@@ -113,6 +193,7 @@ class TetrisView {
     if (code === "ArrowDown" || code === "ArrowLeft" || code === "ArrowRight") {
       this.move(code);
     } else if (code === "ArrowUp" || code === "Space") {
+      this.change();
     }
   }
   move(code) {
@@ -126,7 +207,7 @@ class TetrisView {
       }
       this.startLeft -= this.cellSize;
     } else if (code === "ArrowRight") {
-      if (this.startLeft >= this.canvas.width - 60) {
+      if (this.startLeft >= this.canvas.width - this.shapeWidth) {
         this.createShape();
         return;
       }
@@ -134,18 +215,27 @@ class TetrisView {
     }
     this.createShape();
   }
+  change() {
+    this.clear();
+    this.changeCnt++;
+    this.createShape();
+  }
+
   //this.shape에 있는 모양그리기
   createShape(color) {
+    this.shapeWidth = 0;
     this.context.beginPath();
     this.context.fillStyle = color;
     this.context.lineWidth = 1.5;
-    for (let x of this.shape.location) {
-      this.context.rect(
-        this.startLeft + this.cellSize * x[0],
-        this.startTop + this.cellSize * x[1],
-        this.cellSize,
-        this.cellSize
-      );
+    const nowIdx = this.changeCnt % this.shape.location.length;
+    for (let x of this.shape.location[nowIdx]) {
+      const left = this.startLeft + this.cellSize * x[0];
+      const top = this.startTop + this.cellSize * x[1];
+      this.context.rect(left, top, this.cellSize, this.cellSize);
+      this.shapeWidth =
+        this.shapeWidth < (x[0] + 1) * this.cellSize
+          ? (x[0] + 1) * this.cellSize
+          : this.shapeWidth;
     }
     this.context.fill();
     this.context.stroke();
@@ -172,7 +262,7 @@ class TetrisView {
     this.context.stroke();
     this.context.closePath();
   }
-  //지우는함수
+  //지우는함수0
   clear() {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.createGrid();
@@ -183,3 +273,65 @@ const tetrisShape = new TetrisShape();
 const tetris = new TetrisView(tetrisShape.getShape());
 
 tetris.init();
+
+// this.shape = [
+//       {
+//         name: "I",
+//         color: "red",
+//         location: [
+//           [
+//             [0, 0],
+//             [1, 0],
+//             [2, 0],
+//             [3, 0],
+//           ],
+//           [
+//             [0, 0],
+//             [0, 1],
+//             [0, 2],
+//             [0, 3],
+//           ],
+//         ],
+//       },
+//       {
+//         name: "O",
+//         location: [
+//           [
+//             [0, 0],
+//             [1, 0],
+//             [0, 1],
+//             [1, 1],
+//           ],
+//         ],
+//         color: "orange",
+//       },
+//       {
+//         name: "T",
+//         location: [
+//           [
+//             [1, 0],
+//             [0, 1],
+//             [1, 1],
+//             [2, 1],
+//           ],
+//           [
+//             [1, 0],
+//             [0, 1],
+//             [1, 1],
+//             [2, 1],
+//           ],
+//           [
+//             [1, 0],
+//             [0, 1],
+//             [1, 1],
+//             [2, 1],
+//           ],
+//           [
+//             [1, 0],
+//             [0, 1],
+//             [1, 1],
+//             [2, 1],
+//           ],
+//         ],
+//         color: "yellow",
+//       },
