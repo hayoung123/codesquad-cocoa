@@ -8,10 +8,19 @@ class TetrisModel {
 }
 class TetrisShape {
   constructor() {
+    this.colorList = [
+      "red",
+      "orange",
+      "yellow",
+      "green",
+      "blue",
+      "navy",
+      "purple",
+    ];
     this.shape = [
       {
+        id: 0,
         name: "I",
-        color: "red",
         location: [
           [
             [0, 0],
@@ -28,6 +37,7 @@ class TetrisShape {
         ],
       },
       {
+        id: 1,
         name: "O",
         location: [
           [
@@ -37,9 +47,9 @@ class TetrisShape {
             [1, 1],
           ],
         ],
-        color: "orange",
       },
       {
+        id: 2,
         name: "T",
         location: [
           [
@@ -67,9 +77,9 @@ class TetrisShape {
             [1, 2],
           ],
         ],
-        color: "yellow",
       },
       {
+        id: 3,
         name: "L",
         location: [
           [
@@ -97,9 +107,9 @@ class TetrisShape {
             [2, 0],
           ],
         ],
-        color: "green",
       },
       {
+        id: 4,
         name: "J",
         location: [
           [
@@ -127,9 +137,9 @@ class TetrisShape {
             [2, 2],
           ],
         ],
-        color: "blue",
       },
       {
+        id: 5,
         name: "S",
         location: [
           [
@@ -145,9 +155,9 @@ class TetrisShape {
             [1, 2],
           ],
         ],
-        color: "navy",
       },
       {
+        id: 6,
         name: "Z",
         location: [
           [
@@ -163,21 +173,24 @@ class TetrisShape {
             [0, 2],
           ],
         ],
-        color: "purple",
       },
     ];
   }
   getShape() {
     return this.shape;
   }
+  getColor() {
+    return this.colorList;
+  }
 }
 
 class TetrisView {
-  constructor({ tetrisModel, shapeList }) {
+  constructor({ tetrisModel, shapeList, colorList }) {
     this.canvas = document.querySelector("#js-tetris__canvas");
     this.context = this.canvas.getContext("2d");
     this.model = tetrisModel;
     this.shapeList = shapeList;
+    this.colorList = colorList;
     this.shape;
     this.changeCnt = 0;
     this.cellSize = 30;
@@ -189,9 +202,11 @@ class TetrisView {
     this.shape = this.shapeList[random];
   }
   init() {
+    // console.log(this.cellSize);
+    // console.table(this.model);
     this.random();
-    this.createGrid();
-    this.createShape(this.shape.color);
+    this.clear();
+    this.createShape(this.colorList[this.shape.id]);
     document.addEventListener("keydown", this.handleKeydown.bind(this));
   }
   handleKeydown({ code }) {
@@ -202,11 +217,15 @@ class TetrisView {
       this.change();
     }
   }
+  //움직이기
   move(code) {
     this.clear();
     if (code === "ArrowDown") {
       if (this.checkBlock(this.startLeft, this.startTop + this.cellSize)) {
         this.startTop += this.cellSize;
+      } else {
+        this.fixBlock();
+        this.init();
       }
     } else if (code === "ArrowLeft") {
       if (this.checkBlock(this.startLeft - this.cellSize, this.startTop)) {
@@ -219,6 +238,8 @@ class TetrisView {
     }
     this.createShape();
   }
+
+  //모양 변경
   change() {
     this.clear();
     this.changeCnt++;
@@ -229,23 +250,20 @@ class TetrisView {
       this.createShape();
     }
   }
+
+  //충돌 check하기
   checkBlock(startLeft, startTop) {
     const nowIdx = this.changeCnt % this.shape.location.length;
     for (let x of this.shape.location[nowIdx]) {
       const left = startLeft + this.cellSize * x[0];
       const top = startTop + this.cellSize * x[1];
       if (left < 0 || left + this.cellSize > this.canvas.width) {
-        console.log("left");
         return false;
       }
       if (top >= this.canvas.height) {
-        console.log("height");
         return false;
       }
       if (this.model[top / this.cellSize][left / this.cellSize] !== 0) {
-        console.log("model");
-        console.log(left / this.cellSize);
-        console.log(top / this.cellSize);
         return false;
       }
     }
@@ -294,6 +312,37 @@ class TetrisView {
   clear() {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.createGrid();
+    this.reScreen();
+  }
+  fixBlock() {
+    const nowIdx = this.changeCnt % this.shape.location.length;
+    for (let x of this.shape.location[nowIdx]) {
+      const left = this.startLeft + this.cellSize * x[0];
+      const top = this.startTop + this.cellSize * x[1];
+      this.model[top / this.cellSize][left / this.cellSize] = this.shape.id;
+    }
+    this.startLeft = 90;
+    this.startTop = 0;
+    this.changeCnt = 0;
+  }
+  reScreen() {
+    for (let i = 0; i < this.model.length; i++) {
+      for (let j = 0; j < this.model[i].length; j++) {
+        if (this.model[i][j] !== 0) {
+          const color = this.colorList[this.model[i][j]];
+          this.drawBox(j * this.cellSize, i * this.cellSize, color);
+        }
+      }
+    }
+  }
+  drawBox(left, top, color) {
+    this.context.beginPath();
+    this.context.fillStyle = color;
+    this.context.lineWidth = 1.5;
+    this.context.rect(left, top, this.cellSize, this.cellSize);
+    this.context.fill();
+    this.context.stroke();
+    this.context.closePath();
   }
 }
 
@@ -301,7 +350,8 @@ const model = new TetrisModel();
 const tetrisModel = model.getModel();
 const shapeView = new TetrisShape();
 const shapeList = shapeView.getShape();
-const tetris = new TetrisView({ tetrisModel, shapeList });
+const colorList = shapeView.getColor();
+const tetris = new TetrisView({ tetrisModel, shapeList, colorList });
 
 tetris.init();
 
