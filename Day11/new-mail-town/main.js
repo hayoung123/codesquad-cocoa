@@ -1,8 +1,8 @@
 class Model {
   constructor() {
-    // this.townList = this.setTown();
+    this.townList = this.setTown();
     this.depth = 3;
-    this.townList = ["A", "B", "C", "D", "E", "F", "G", "h", "I"];
+    // this.townList = ["A", "B", "C", "D", "E", "F", "G", "h", "I"];
     this.map = this.createObj("", "wrapper");
   }
   getTownMap() {
