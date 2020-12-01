@@ -12,6 +12,13 @@ class TetrisModel {
   getScore() {
     return this.score;
   }
+  resetModel() {
+    this.model = Array.from({ length: 20 }, () => new Array(10).fill(0));
+    return this.model;
+  }
+  resetScore() {
+    this.score = 0;
+  }
 }
 class TetrisShape {
   constructor() {
@@ -216,7 +223,15 @@ class TetrisView {
   init() {
     this.clear();
     document.addEventListener("keydown", this.handleKeydown.bind(this));
-    this.playBtn.addEventListener("click", this.initPlay.bind(this));
+    this.playBtn.addEventListener("click", this.handleClick.bind(this));
+  }
+  handleClick() {
+    const gameover = document.querySelector(".gameover");
+    gameover.classList.add("hidden");
+    this.model = this.tetrisModel.resetModel();
+    this.tetrisModel.resetScore();
+    this.scoreView.updateScore();
+    this.initPlay();
   }
   initPlay() {
     clearTimeout(this.timer);
@@ -228,6 +243,9 @@ class TetrisView {
   play() {
     this.random();
     this.clear();
+    if (!this.checkBlock(this.startLeft, this.startTop + 30)) {
+      return this.finishPlay();
+    }
     this.createShape(this.colorList[this.shape.id]);
     this.autoMove();
   }
@@ -240,6 +258,10 @@ class TetrisView {
     } else if (code === "ArrowUp" || code === "Space") {
       this.change();
     }
+  }
+  finishPlay() {
+    const gameover = document.querySelector(".gameover");
+    gameover.classList.remove("hidden");
   }
   // 자동으로 내려가기
   autoMove() {
@@ -317,18 +339,12 @@ class TetrisView {
   createShape(color) {
     this.shapeWidth = 0;
     this.shapeHeight = 0;
-    this.context.beginPath();
-    this.context.fillStyle = color;
-    this.context.lineWidth = 1.5;
     const nowIdx = this.changeCnt % this.shape.location.length;
     for (let x of this.shape.location[nowIdx]) {
       const left = this.startLeft + this.cellSize * x[0];
       const top = this.startTop + this.cellSize * x[1];
-      this.context.rect(left, top, this.cellSize, this.cellSize);
+      this.drawBox(left, top, color);
     }
-    this.context.fill();
-    this.context.stroke();
-    this.context.closePath();
   }
 
   //tetris 격자판
@@ -420,5 +436,3 @@ const scoreView = new ScoreView({ tetrisModel });
 const tetris = new TetrisView({ tetrisModel, shapeView, scoreView });
 
 tetris.init();
-
-console.table(tetrisModel.getModel());

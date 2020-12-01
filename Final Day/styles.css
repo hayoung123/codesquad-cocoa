@@ -16,3 +16,18 @@
   text-align: center;
   margin-bottom: 20px;
 }
+.gameover {
+  position: absolute;
+  top: 250px;
+  width: 300px;
+  height: 50px;
+  border: 2px solid red;
+  font-size: 27px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+.hidden {
+  display: none;
+}
