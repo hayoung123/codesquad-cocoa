@@ -200,10 +200,12 @@ class TetrisShape {
 }
 
 class TetrisView {
-  constructor({ tetrisModel, shapeView, scoreView }) {
+  constructor(KEY, { tetrisModel, shapeView, scoreView }) {
+    this.key = KEY;
     this.canvas = document.querySelector("#js-tetris__canvas");
     this.context = this.canvas.getContext("2d");
     this.playBtn = document.querySelector(".start__btn");
+    this.gameover = document.querySelector(".gameover");
     this.tetrisModel = tetrisModel;
     this.model = tetrisModel.getModel();
     this.shapeList = shapeView.getShape();
@@ -226,8 +228,7 @@ class TetrisView {
     this.playBtn.addEventListener("click", this.handleClick.bind(this));
   }
   handleClick() {
-    const gameover = document.querySelector(".gameover");
-    gameover.classList.add("hidden");
+    this.gameover.classList.add("hidden");
     this.model = this.tetrisModel.resetModel();
     this.tetrisModel.resetScore();
     this.scoreView.updateScore();
@@ -251,17 +252,25 @@ class TetrisView {
   }
 
   //keyboard 이벤트
-  handleKeydown({ code }) {
-    // event.preventDefault();
-    if (code === "ArrowDown" || code === "ArrowLeft" || code === "ArrowRight") {
-      this.move(code);
-    } else if (code === "ArrowUp" || code === "Space") {
+  handleKeydown({ keyCode }) {
+    if (
+      keyCode === this.key.LEFT ||
+      keyCode === this.key.RIGHT ||
+      keyCode === this.key.DOWN
+    ) {
+      this.move(keyCode);
+    } else if (keyCode === this.key.UP) {
       this.change();
+    } else if (keyCode === this.key.SPACE) {
+      event.preventDefault();
+      // console.log(keyCode);
+      // console.log("hello");
+      this.drop();
     }
   }
   finishPlay() {
-    const gameover = document.querySelector(".gameover");
-    gameover.classList.remove("hidden");
+    this.key;
+    this.gameover.classList.remove("hidden");
   }
   // 자동으로 내려가기
   autoMove() {
@@ -280,9 +289,9 @@ class TetrisView {
   }
 
   //움직이기
-  move(code) {
+  move(keyCode) {
     this.clear();
-    if (code === "ArrowDown") {
+    if (keyCode === this.key.DOWN) {
       if (this.checkBlock(this.startLeft, this.startTop + this.cellSize)) {
         this.startTop += this.cellSize;
       } else {
@@ -290,11 +299,11 @@ class TetrisView {
         this.deleteLine();
         this.initPlay();
       }
-    } else if (code === "ArrowLeft") {
+    } else if (keyCode === this.key.LEFT) {
       if (this.checkBlock(this.startLeft - this.cellSize, this.startTop)) {
         this.startLeft -= this.cellSize;
       }
-    } else if (code === "ArrowRight") {
+    } else if (keyCode === this.key.RIGHT) {
       if (this.checkBlock(this.startLeft + this.cellSize, this.startTop)) {
         this.startLeft += this.cellSize;
       }
@@ -302,21 +311,38 @@ class TetrisView {
     this.createShape(this.colorList[this.shape.id]);
   }
 
+  drop() {
+    this.clear();
+
+    if (this.checkBlock(this.startLeft, this.startTop + this.cellSize)) {
+      this.startTop += this.cellSize;
+      this.createShape(this.colorList[this.shape.id]);
+      requestAnimationFrame(this.drop.bind(this));
+    } else {
+      this.fixBlock();
+      this.deleteLine();
+      this.initPlay();
+    }
+  }
+
   //모양 변경
   change() {
     this.clear();
     this.changeCnt++;
-    if (this.checkBlock(this.startLeft, this.startTop)) {
-      this.createShape(this.colorList[this.shape.id]);
-    } else {
+    if (!this.checkBlock(this.startLeft, this.startTop)) {
       if (this.checkBlock(this.startLeft - this.cellSize, this.startTop)) {
         this.startLeft -= this.cellSize;
-        this.createShape(this.colorList[this.shape.id]);
+      } else if (
+        this.checkBlock(this.startLeft + this.cellSize, this.startTop)
+      ) {
+        this.startLeft += this.cellSize;
+      } else if (this.shape.id === 1) {
+        this.startLeft -= this.cellSize * 3;
       } else {
         this.changeCnt--;
-        this.createShape(this.colorList[this.shape.id]);
       }
     }
+    this.createShape(this.colorList[this.shape.id]);
   }
 
   //충돌 check하기
@@ -337,8 +363,6 @@ class TetrisView {
 
   //this.shape에 있는 모양그리기
   createShape(color) {
-    this.shapeWidth = 0;
-    this.shapeHeight = 0;
     const nowIdx = this.changeCnt % this.shape.location.length;
     for (let x of this.shape.location[nowIdx]) {
       const left = this.startLeft + this.cellSize * x[0];
@@ -386,7 +410,8 @@ class TetrisView {
     this.createGrid();
     this.reScreen();
   }
-  //모델에 blcok저장
+
+  //모델에 block저장
   fixBlock() {
     const nowIdx = this.changeCnt % this.shape.location.length;
     for (let x of this.shape.location[nowIdx]) {
@@ -430,9 +455,16 @@ class ScoreView {
   }
 }
 
+const KEY = {
+  LEFT: 37,
+  UP: 38,
+  RIGHT: 39,
+  DOWN: 40,
+  SPACE: 32,
+};
 const tetrisModel = new TetrisModel();
 const shapeView = new TetrisShape();
 const scoreView = new ScoreView({ tetrisModel });
-const tetris = new TetrisView({ tetrisModel, shapeView, scoreView });
+const tetris = new TetrisView(KEY, { tetrisModel, shapeView, scoreView });
 
 tetris.init();
