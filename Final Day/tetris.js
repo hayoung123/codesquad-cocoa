@@ -9,6 +9,9 @@ class TetrisModel {
   addScore() {
     this.score += 100;
   }
+  getScore() {
+    return this.score;
+  }
 }
 class TetrisShape {
   constructor() {
@@ -190,36 +193,46 @@ class TetrisShape {
 }
 
 class TetrisView {
-  constructor({ tetrisModel, shapeList, colorList }) {
+  constructor({ tetrisModel, shapeView, scoreView }) {
     this.canvas = document.querySelector("#js-tetris__canvas");
     this.context = this.canvas.getContext("2d");
-    this.model = tetrisModel;
-    this.shapeList = shapeList;
-    this.colorList = colorList;
+    this.playBtn = document.querySelector(".start__btn");
+    this.tetrisModel = tetrisModel;
+    this.model = tetrisModel.getModel();
+    this.shapeList = shapeView.getShape();
+    this.colorList = shapeView.getColor();
+    this.scoreView = scoreView;
     this.shape;
     this.changeCnt = 0;
     this.cellSize = 30;
     this.startLeft = 90;
-    this.startTop = 0;
+    this.startTop = -30;
+    this.timer;
   }
   random() {
     const random = Math.floor(Math.random() * 7);
     this.shape = this.shapeList[random];
   }
   init() {
-    // console.log(this.cellSize);
-    // console.table(this.model);
-    this.random();
     this.clear();
-    this.createShape(this.colorList[this.shape.id]);
     document.addEventListener("keydown", this.handleKeydown.bind(this));
+    this.playBtn.addEventListener("click", this.initPlay.bind(this));
+  }
+  initPlay() {
+    clearTimeout(this.timer);
+    this.changeCnt = 0;
+    this.startLeft = 90;
+    this.startTop = -30;
+    this.play();
   }
   play() {
-    console.table(this.model);
     this.random();
     this.clear();
     this.createShape(this.colorList[this.shape.id]);
+    this.autoMove();
   }
+
+  //keyboard 이벤트
   handleKeydown({ code }) {
     // event.preventDefault();
     if (code === "ArrowDown" || code === "ArrowLeft" || code === "ArrowRight") {
@@ -228,6 +241,22 @@ class TetrisView {
       this.change();
     }
   }
+  // 자동으로 내려가기
+  autoMove() {
+    console.log(this.shape.id, ":", this.timer);
+    this.clear();
+    if (this.checkBlock(this.startLeft, this.startTop + this.cellSize)) {
+      this.startTop += this.cellSize;
+      this.createShape(this.colorList[this.shape.id]);
+    } else {
+      this.fixBlock();
+      this.deleteLine();
+      this.initPlay();
+      return;
+    }
+    this.timer = setTimeout(this.autoMove.bind(this), 1000);
+  }
+
   //움직이기
   move(code) {
     this.clear();
@@ -237,7 +266,7 @@ class TetrisView {
       } else {
         this.fixBlock();
         this.deleteLine();
-        this.play();
+        this.initPlay();
       }
     } else if (code === "ArrowLeft") {
       if (this.checkBlock(this.startLeft - this.cellSize, this.startTop)) {
@@ -258,8 +287,13 @@ class TetrisView {
     if (this.checkBlock(this.startLeft, this.startTop)) {
       this.createShape(this.colorList[this.shape.id]);
     } else {
-      this.changeCnt--;
-      this.createShape(this.colorList[this.shape.id]);
+      if (this.checkBlock(this.startLeft - this.cellSize, this.startTop)) {
+        this.startLeft -= this.cellSize;
+        this.createShape(this.colorList[this.shape.id]);
+      } else {
+        this.changeCnt--;
+        this.createShape(this.colorList[this.shape.id]);
+      }
     }
   }
 
@@ -269,9 +303,6 @@ class TetrisView {
     for (let x of this.shape.location[nowIdx]) {
       const left = startLeft + this.cellSize * x[0];
       const top = startTop + this.cellSize * x[1];
-      if (left < 0 || left + this.cellSize > this.canvas.width) {
-        return false;
-      }
       if (top >= this.canvas.height) {
         return false;
       }
@@ -327,6 +358,8 @@ class TetrisView {
         this.model.splice(i, 1);
         const newArray = new Array(10).fill(0);
         this.model.unshift(newArray);
+        this.tetrisModel.addScore();
+        this.scoreView.updateScore();
       }
     }
     this.clear();
@@ -337,7 +370,7 @@ class TetrisView {
     this.createGrid();
     this.reScreen();
   }
-
+  //모델에 blcok저장
   fixBlock() {
     const nowIdx = this.changeCnt % this.shape.location.length;
     for (let x of this.shape.location[nowIdx]) {
@@ -345,10 +378,9 @@ class TetrisView {
       const top = this.startTop + this.cellSize * x[1];
       this.model[top / this.cellSize][left / this.cellSize] = this.shape.id;
     }
-    this.startLeft = 90;
-    this.startTop = 0;
-    this.changeCnt = 0;
   }
+
+  //model에 따라서 쌓인 블럭들 그리기
   reScreen() {
     for (let i = 0; i < this.model.length; i++) {
       for (let j = 0; j < this.model[i].length; j++) {
@@ -359,6 +391,7 @@ class TetrisView {
       }
     }
   }
+  //한 픽셀 그리는 상자
   drawBox(left, top, color) {
     this.context.beginPath();
     this.context.fillStyle = color;
@@ -370,13 +403,22 @@ class TetrisView {
   }
 }
 
-const model = new TetrisModel();
-const tetrisModel = model.getModel();
+class ScoreView {
+  constructor({ tetrisModel }) {
+    this.score = tetrisModel;
+    this.scoreScreen = document.querySelector("#js-score");
+  }
+  updateScore() {
+    const score = this.score.getScore();
+    this.scoreScreen.innerHTML = score;
+  }
+}
+
+const tetrisModel = new TetrisModel();
 const shapeView = new TetrisShape();
-const shapeList = shapeView.getShape();
-const colorList = shapeView.getColor();
-const tetris = new TetrisView({ tetrisModel, shapeList, colorList });
+const scoreView = new ScoreView({ tetrisModel });
+const tetris = new TetrisView({ tetrisModel, shapeView, scoreView });
 
 tetris.init();
 
-console.table(model.getModel());
+console.table(tetrisModel.getModel());
