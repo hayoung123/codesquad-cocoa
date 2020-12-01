@@ -224,10 +224,13 @@ class TetrisView {
   }
   init() {
     this.clear();
-    document.addEventListener("keydown", this.handleKeydown.bind(this));
     this.playBtn.addEventListener("click", this.handleClick.bind(this));
   }
+  //model reset, score&view reset
   handleClick() {
+    document.addEventListener("keydown", this.handleKeydown.bind(this));
+    this.playBtn.disabled = true;
+    this.playBtn.innerHTML = "PLAY";
     this.gameover.classList.add("hidden");
     this.model = this.tetrisModel.resetModel();
     this.tetrisModel.resetScore();
@@ -244,15 +247,24 @@ class TetrisView {
   play() {
     this.random();
     this.clear();
-    if (!this.checkBlock(this.startLeft, this.startTop + 30)) {
+    if (!this.checkBlock(this.startLeft, 0)) {
       return this.finishPlay();
     }
     this.createShape(this.colorList[this.shape.id]);
     this.autoMove();
   }
 
+  //게임 끝내기
+  finishPlay() {
+    document.removeEventListener("keydown", this.handleKeydown.bind(this));
+    this.gameover.classList.remove("hidden");
+    this.playBtn.innerHTML = "RESET";
+    this.playBtn.disabled = false;
+  }
+
   //keyboard 이벤트
   handleKeydown({ keyCode }) {
+    console.log(keyCode);
     if (
       keyCode === this.key.LEFT ||
       keyCode === this.key.RIGHT ||
@@ -263,18 +275,12 @@ class TetrisView {
       this.change();
     } else if (keyCode === this.key.SPACE) {
       event.preventDefault();
-      // console.log(keyCode);
-      // console.log("hello");
       this.drop();
     }
   }
-  finishPlay() {
-    this.key;
-    this.gameover.classList.remove("hidden");
-  }
+
   // 자동으로 내려가기
   autoMove() {
-    console.log(this.shape.id, ":", this.timer);
     this.clear();
     if (this.checkBlock(this.startLeft, this.startTop + this.cellSize)) {
       this.startTop += this.cellSize;
@@ -311,9 +317,9 @@ class TetrisView {
     this.createShape(this.colorList[this.shape.id]);
   }
 
+  //space바 누를 시 뚝떨어지는것
   drop() {
     this.clear();
-
     if (this.checkBlock(this.startLeft, this.startTop + this.cellSize)) {
       this.startTop += this.cellSize;
       this.createShape(this.colorList[this.shape.id]);
