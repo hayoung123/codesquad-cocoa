@@ -205,6 +205,7 @@ class TetrisView {
     this.canvas = selector.canvas;
     this.context = this.canvas.getContext("2d");
     this.playBtn = selector.playBtn;
+    this.resetBtn = selector.resetBtn;
     this.gameover = selector.gameover;
     this.tetrisModel = tetrisModel;
     this.model = tetrisModel.getModel();
@@ -216,7 +217,8 @@ class TetrisView {
     this.cellSize = 30;
     this.startLeft = 90;
     this.startTop = -30;
-    this.timer;
+    this.timer = null;
+    this.requestID = null;
   }
   random() {
     const random = Math.floor(Math.random() * 7);
@@ -225,47 +227,70 @@ class TetrisView {
   init() {
     this.clear();
     this.playBtn.addEventListener("click", this.handleClick.bind(this));
+    this.resetBtn.addEventListener("click", this.handleClick.bind(this));
     document.addEventListener("keydown", this.handleKeydown.bind(this));
   }
   //model reset, score&view reset
-  handleClick() {
-    this.playBtn.disabled = true;
-    this.playBtn.innerHTML = "PLAY";
+  handleClick({ target }) {
     this.gameover.classList.add("hidden");
     this.model = this.tetrisModel.resetModel();
     this.tetrisModel.resetScore();
     this.scoreView.updateScore();
-    this.initPlay();
+    console.log(target.innerHTML);
+    if (target.innerHTML === "RESET") {
+      this.timer = null;
+      this.requestID = null;
+      this.clear();
+    } else {
+      this.playBtn.disabled = true;
+      this.play();
+    }
   }
-  initPlay() {
+  play() {
+    cancelAnimationFrame(this.requestID);
     clearTimeout(this.timer);
+    this.clear();
     this.changeCnt = 0;
     this.startLeft = 90;
     this.startTop = -30;
-    this.play();
-  }
-  play() {
     this.random();
-    this.clear();
-    if (!this.checkBlock(this.startLeft, 0)) {
-      console.log("stop");
-      document.removeEventListener("keydown", this.handleKeydown.bind(this));
+    this.createShape(this.colorList[this.shape.id]);
+    if (this.checkGameOver()) {
       return this.finishPlay();
     }
-    this.createShape(this.colorList[this.shape.id]);
     this.autoMove();
   }
 
+  // 자동으로 내려가기
+  autoMove() {
+    if (this.checkBlock(this.startLeft, this.startTop + this.cellSize)) {
+      this.clear();
+      this.startTop += this.cellSize;
+      this.createShape(this.colorList[this.shape.id]);
+      this.timer = setTimeout(this.autoMove.bind(this), 1000);
+    } else {
+      this.fixBlock();
+      this.deleteLine();
+      this.play();
+    }
+  }
+  //check 게임 오버
+  checkGameOver() {
+    console.log(this.model[0]);
+    for (let x of this.model[0]) {
+      if (x !== 0) return true;
+    }
+    return false;
+  }
   //게임 끝내기
   finishPlay() {
+    document.removeEventListener("keydown", this.handleKeydown.bind(this));
     this.gameover.classList.remove("hidden");
-    this.playBtn.innerHTML = "RESET";
     this.playBtn.disabled = false;
   }
 
   //keyboard 이벤트
   handleKeydown({ keyCode }) {
-    console.log(keyCode);
     if (
       keyCode === this.key.LEFT ||
       keyCode === this.key.RIGHT ||
@@ -280,55 +305,49 @@ class TetrisView {
     }
   }
 
-  // 자동으로 내려가기
-  autoMove() {
-    this.clear();
-    if (this.checkBlock(this.startLeft, this.startTop + this.cellSize)) {
-      this.startTop += this.cellSize;
-      this.createShape(this.colorList[this.shape.id]);
-    } else {
-      this.fixBlock();
-      this.deleteLine();
-      this.initPlay();
-      return;
-    }
-    this.timer = setTimeout(this.autoMove.bind(this), 1000);
-  }
-
   //움직이기
   move(keyCode) {
-    this.clear();
     if (keyCode === this.key.DOWN) {
       if (this.checkBlock(this.startLeft, this.startTop + this.cellSize)) {
-        this.startTop += this.cellSize;
+        this.moveBlock(keyCode);
       } else {
         this.fixBlock();
         this.deleteLine();
-        this.initPlay();
+        this.play();
       }
     } else if (keyCode === this.key.LEFT) {
       if (this.checkBlock(this.startLeft - this.cellSize, this.startTop)) {
-        this.startLeft -= this.cellSize;
+        this.moveBlock(keyCode);
       }
     } else if (keyCode === this.key.RIGHT) {
       if (this.checkBlock(this.startLeft + this.cellSize, this.startTop)) {
-        this.startLeft += this.cellSize;
+        this.moveBlock(keyCode);
       }
+    }
+  }
+  moveBlock(keyCode) {
+    this.clear();
+    if (keyCode === this.key.DOWN) {
+      this.startTop += this.cellSize;
+    } else if (keyCode === this.key.LEFT) {
+      this.startLeft -= this.cellSize;
+    } else if (keyCode === this.key.RIGHT) {
+      this.startLeft += this.cellSize;
     }
     this.createShape(this.colorList[this.shape.id]);
   }
 
   //space바 누를 시 뚝떨어지는것
   drop() {
-    this.clear();
     if (this.checkBlock(this.startLeft, this.startTop + this.cellSize)) {
+      this.clear();
       this.startTop += this.cellSize;
       this.createShape(this.colorList[this.shape.id]);
-      requestAnimationFrame(this.drop.bind(this));
+      this.requestID = requestAnimationFrame(this.drop.bind(this));
     } else {
       this.fixBlock();
       this.deleteLine();
-      this.initPlay();
+      this.play();
     }
   }
 
@@ -409,7 +428,6 @@ class TetrisView {
         this.scoreView.updateScore();
       }
     }
-    this.clear();
   }
   //화면 재구성
   clear() {
@@ -479,6 +497,7 @@ const KEY = {
 const selector = {
   canvas: $._("#js-tetris__canvas"),
   playBtn: $._(".start__btn"),
+  resetBtn: $._(".reset__btn"),
   gameover: $._(".gameover"),
   scoreScreen: $._("#js-score"),
 };
