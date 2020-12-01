@@ -29,6 +29,7 @@
   font-weight: 600;
 }
 .level-btn__wrapper {
+  margin-top: 10px;
   display: flex;
 }
 .hidden {

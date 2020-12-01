@@ -2,7 +2,7 @@ class TetrisModel {
   constructor() {
     this.model = Array.from({ length: 20 }, () => new Array(10).fill(0));
     this.score = 0;
-    this.level = 10;
+    this.level = 1;
   }
   getModel() {
     return this.model;
@@ -20,8 +20,14 @@ class TetrisModel {
   resetScore() {
     this.score = 0;
   }
+  levelDown() {
+    if (this.level > 1) this.level -= 1;
+  }
   levelUp() {
-    if (level - 1 < 0) this.level -= 1;
+    if (this.level < 10) this.level += 1;
+  }
+  getLevel() {
+    return this.level;
   }
 }
 class TetrisShape {
@@ -210,6 +216,9 @@ class TetrisView {
     this.context = this.canvas.getContext("2d");
     this.playBtn = selector.playBtn;
     this.resetBtn = selector.resetBtn;
+    this.nowLevel = selector.nowLevel;
+    this.levelDownBtn = selector.levelDownBtn;
+    this.levelUpBtn = selector.levelUpBtn;
     this.gameover = selector.gameover;
     this.tetrisModel = tetrisModel;
     this.model = tetrisModel.getModel();
@@ -223,7 +232,7 @@ class TetrisView {
     this.startTop = -30;
     this.timer = null;
     this.requestID = null;
-    this.level = 1000;
+    this.level = this.tetrisModel.getLevel();
   }
   random() {
     const random = Math.floor(Math.random() * 7);
@@ -233,6 +242,8 @@ class TetrisView {
     this.clear();
     this.playBtn.addEventListener("click", this.handleClick.bind(this));
     this.resetBtn.addEventListener("click", this.handleClick.bind(this));
+    this.levelUpBtn.addEventListener("click", this.handleLevel.bind(this));
+    this.levelDownBtn.addEventListener("click", this.handleLevel.bind(this));
     document.addEventListener("keydown", this.handleKeydown.bind(this));
   }
 
@@ -270,11 +281,12 @@ class TetrisView {
 
   // 자동으로 내려가기
   autoMove() {
+    const moveFast = 1000 - (this.level - 1) * 100;
     if (this.checkBlock(this.startLeft, this.startTop + this.cellSize)) {
       this.clear();
       this.startTop += this.cellSize;
       this.createShape(this.colorList[this.shape.id]);
-      this.timer = setTimeout(this.autoMove.bind(this), this.level);
+      this.timer = setTimeout(this.autoMove.bind(this), moveFast);
     } else {
       this.fixBlock();
       this.deleteLine();
@@ -473,6 +485,16 @@ class TetrisView {
     this.context.stroke();
     this.context.closePath();
   }
+  handleLevel({ target }) {
+    const up = "level-up__btn";
+    if (target.classList[0] === up) {
+      this.tetrisModel.levelUp();
+    } else {
+      this.tetrisModel.levelDown();
+    }
+    this.level = this.tetrisModel.getLevel();
+    this.nowLevel.innerHTML = `Lv${this.level}`;
+  }
 }
 
 class ScoreView {
@@ -505,6 +527,9 @@ const selector = {
   playBtn: $._(".start__btn"),
   resetBtn: $._(".reset__btn"),
   gameover: $._(".gameover"),
+  nowLevel: $._(".now-level"),
+  levelDownBtn: $._(".level-down__btn"),
+  levelUpBtn: $._(".level-up__btn"),
   scoreScreen: $._("#js-score"),
 };
 
