@@ -2,6 +2,7 @@ class TetrisModel {
   constructor() {
     this.model = Array.from({ length: 20 }, () => new Array(10).fill(0));
     this.score = 0;
+    this.level = 10;
   }
   getModel() {
     return this.model;
@@ -18,6 +19,9 @@ class TetrisModel {
   }
   resetScore() {
     this.score = 0;
+  }
+  levelUp() {
+    if (level - 1 < 0) this.level -= 1;
   }
 }
 class TetrisShape {
@@ -219,6 +223,7 @@ class TetrisView {
     this.startTop = -30;
     this.timer = null;
     this.requestID = null;
+    this.level = 1000;
   }
   random() {
     const random = Math.floor(Math.random() * 7);
@@ -230,19 +235,21 @@ class TetrisView {
     this.resetBtn.addEventListener("click", this.handleClick.bind(this));
     document.addEventListener("keydown", this.handleKeydown.bind(this));
   }
+
   //model reset, score&view reset
   handleClick({ target }) {
     this.gameover.classList.add("hidden");
     this.model = this.tetrisModel.resetModel();
     this.tetrisModel.resetScore();
     this.scoreView.updateScore();
-    console.log(target.innerHTML);
+    this.clear();
     if (target.innerHTML === "RESET") {
+      cancelAnimationFrame(this.requestID);
+      clearTimeout(this.timer);
       this.timer = null;
       this.requestID = null;
-      this.clear();
     } else {
-      this.playBtn.disabled = true;
+      // this.playBtn.disabled = true;
       this.play();
     }
   }
@@ -267,7 +274,7 @@ class TetrisView {
       this.clear();
       this.startTop += this.cellSize;
       this.createShape(this.colorList[this.shape.id]);
-      this.timer = setTimeout(this.autoMove.bind(this), 1000);
+      this.timer = setTimeout(this.autoMove.bind(this), this.level);
     } else {
       this.fixBlock();
       this.deleteLine();
@@ -276,7 +283,6 @@ class TetrisView {
   }
   //check 게임 오버
   checkGameOver() {
-    console.log(this.model[0]);
     for (let x of this.model[0]) {
       if (x !== 0) return true;
     }
@@ -286,7 +292,7 @@ class TetrisView {
   finishPlay() {
     document.removeEventListener("keydown", this.handleKeydown.bind(this));
     this.gameover.classList.remove("hidden");
-    this.playBtn.disabled = false;
+    // this.playBtn.disabled = false;
   }
 
   //keyboard 이벤트

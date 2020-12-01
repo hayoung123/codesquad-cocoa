@@ -28,6 +28,9 @@
   justify-content: center;
   font-weight: 600;
 }
+.level-btn__wrapper {
+  display: flex;
+}
 .hidden {
   display: none;
 }
