@@ -200,12 +200,12 @@ class TetrisShape {
 }
 
 class TetrisView {
-  constructor(KEY, { tetrisModel, shapeView, scoreView }) {
+  constructor(KEY, selector, { tetrisModel, shapeView, scoreView }) {
     this.key = KEY;
-    this.canvas = document.querySelector("#js-tetris__canvas");
+    this.canvas = selector.canvas;
     this.context = this.canvas.getContext("2d");
-    this.playBtn = document.querySelector(".start__btn");
-    this.gameover = document.querySelector(".gameover");
+    this.playBtn = selector.playBtn;
+    this.gameover = selector.gameover;
     this.tetrisModel = tetrisModel;
     this.model = tetrisModel.getModel();
     this.shapeList = shapeView.getShape();
@@ -225,10 +225,10 @@ class TetrisView {
   init() {
     this.clear();
     this.playBtn.addEventListener("click", this.handleClick.bind(this));
+    document.addEventListener("keydown", this.handleKeydown.bind(this));
   }
   //model reset, score&view reset
   handleClick() {
-    document.addEventListener("keydown", this.handleKeydown.bind(this));
     this.playBtn.disabled = true;
     this.playBtn.innerHTML = "PLAY";
     this.gameover.classList.add("hidden");
@@ -248,6 +248,8 @@ class TetrisView {
     this.random();
     this.clear();
     if (!this.checkBlock(this.startLeft, 0)) {
+      console.log("stop");
+      document.removeEventListener("keydown", this.handleKeydown.bind(this));
       return this.finishPlay();
     }
     this.createShape(this.colorList[this.shape.id]);
@@ -256,7 +258,6 @@ class TetrisView {
 
   //게임 끝내기
   finishPlay() {
-    document.removeEventListener("keydown", this.handleKeydown.bind(this));
     this.gameover.classList.remove("hidden");
     this.playBtn.innerHTML = "RESET";
     this.playBtn.disabled = false;
@@ -451,15 +452,21 @@ class TetrisView {
 }
 
 class ScoreView {
-  constructor({ tetrisModel }) {
+  constructor(selector, { tetrisModel }) {
     this.score = tetrisModel;
-    this.scoreScreen = document.querySelector("#js-score");
+    this.scoreScreen = selector.scoreScreen;
   }
   updateScore() {
     const score = this.score.getScore();
     this.scoreScreen.innerHTML = score;
   }
 }
+
+const $ = {
+  _(selector, base = document) {
+    return base.querySelector(selector);
+  },
+};
 
 const KEY = {
   LEFT: 37,
@@ -468,9 +475,21 @@ const KEY = {
   DOWN: 40,
   SPACE: 32,
 };
+
+const selector = {
+  canvas: $._("#js-tetris__canvas"),
+  playBtn: $._(".start__btn"),
+  gameover: $._(".gameover"),
+  scoreScreen: $._("#js-score"),
+};
+
 const tetrisModel = new TetrisModel();
 const shapeView = new TetrisShape();
-const scoreView = new ScoreView({ tetrisModel });
-const tetris = new TetrisView(KEY, { tetrisModel, shapeView, scoreView });
+const scoreView = new ScoreView(selector, { tetrisModel });
+const tetris = new TetrisView(KEY, selector, {
+  tetrisModel,
+  shapeView,
+  scoreView,
+});
 
 tetris.init();
