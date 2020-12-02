@@ -33,6 +33,9 @@
   margin-top: 10px;
   display: flex;
 }
+.level-btn__wrapper > i {
+  cursor: pointer;
+}
 .hidden {
   display: none;
 }

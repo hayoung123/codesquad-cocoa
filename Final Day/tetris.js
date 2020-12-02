@@ -250,6 +250,7 @@ class TetrisView {
     this.timer = null;
     this.requestID = null;
     this.level = this.tetrisModel.getLevel();
+    this.handleKeydown = this.handleKeydown.bind(this);
   }
 
   init() {
@@ -257,9 +258,8 @@ class TetrisView {
     this.setNextShape();
     this.playBtn.addEventListener("click", this.handleClick.bind(this));
     this.resetBtn.addEventListener("click", this.handleClick.bind(this));
-    this.levelUpBtn.addEventListener("click", this.handleLevel.bind(this));
-    this.levelDownBtn.addEventListener("click", this.handleLevel.bind(this));
-    document.addEventListener("keydown", this.handleKeydown.bind(this));
+    this.levelUpBtn.addEventListener("click", this.levelUp.bind(this));
+    this.levelDownBtn.addEventListener("click", this.levelDown.bind(this));
   }
   setNextShape() {
     const random = Math.floor(Math.random() * 7);
@@ -273,6 +273,7 @@ class TetrisView {
     this.tetrisModel.resetScore();
     this.scoreView.updateScore();
     this.clear();
+    this.clearNextShape();
     if (target.innerHTML === "RESET") {
       cancelAnimationFrame(this.requestID);
       clearTimeout(this.timer);
@@ -280,7 +281,9 @@ class TetrisView {
       this.requestID = null;
       this.setNextShape();
       this.playBtn.disabled = false;
+      document.removeEventListener("keydown", this.handleKeydown);
     } else {
+      document.addEventListener("keydown", this.handleKeydown);
       this.playBtn.disabled = true;
       this.play();
     }
@@ -326,7 +329,7 @@ class TetrisView {
   }
   //게임 끝내기
   finishPlay() {
-    document.removeEventListener("keydown", this.handleKeydown.bind(this));
+    document.removeEventListener("keydown", this.handleKeydown);
     this.gameover.classList.remove("hidden");
   }
 
@@ -404,7 +407,7 @@ class TetrisView {
       ) {
         this.startLeft += this.cellSize;
       } else if (this.shape.id === 1) {
-        this.startLeft -= this.cellSize * 3;
+        this.startLeft -= this.cellSize * (this.shape.width - 1);
       } else {
         this.changeCnt--;
       }
@@ -500,7 +503,6 @@ class TetrisView {
 
   //모델에 block저장
   fixBlock() {
-    console.table(this.model);
     const nowIdx = this.changeCnt % this.shape.location.length;
     for (let x of this.shape.location[nowIdx]) {
       const left = this.startLeft + this.cellSize * x[0];
@@ -538,13 +540,13 @@ class TetrisView {
   }
 
   //level 조절하기
-  handleLevel({ target }) {
-    const up = "level-up__btn";
-    if (target.classList[0] === up) {
-      this.tetrisModel.levelUp();
-    } else {
-      this.tetrisModel.levelDown();
-    }
+  levelUp() {
+    this.tetrisModel.levelUp();
+    this.level = this.tetrisModel.getLevel();
+    this.nowLevel.innerHTML = `Lv${this.level}`;
+  }
+  levelDown() {
+    this.tetrisModel.levelDown();
     this.level = this.tetrisModel.getLevel();
     this.nowLevel.innerHTML = `Lv${this.level}`;
   }
