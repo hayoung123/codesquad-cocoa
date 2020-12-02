@@ -1,39 +1,74 @@
+html {
+  font-family: "Major Mono Display", monospace;
+}
 .tetris__wrapper {
   display: flex;
 }
 .tetris__canvas,
 .next__canvas {
+  margin-top: 5px;
   border: 2px solid black;
 }
+.next__canvas {
+  margin-bottom: 20px;
+}
 .info__wrapper {
+  margin-top: 5px;
   margin-left: 20px;
+  width: 200px;
+  height: 600px;
 }
 .tetris__title {
   width: 200px;
   height: 70px;
   border: 3px solid black;
   font-size: 40px;
+  font-weight: 600;
   line-height: 70px;
   text-align: center;
   margin-bottom: 20px;
 }
 .gameover {
   position: absolute;
+  background-color: black;
+  color: red;
   top: 250px;
   width: 300px;
   height: 50px;
-  border: 2px solid red;
+  border: 2px solid black;
   font-size: 27px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 600;
 }
+.play-btn__wrapper {
+  margin-top: 30px;
+}
+.play-btn__wrapper > button {
+  width: 200px;
+  height: 30px;
+  margin-bottom: 5px;
+  border: 2px solid black;
+  background-color: white;
+  cursor: pointer;
+}
 .level-btn__wrapper {
-  margin-top: 10px;
+  font-size: 20px;
+  margin-top: 40px;
+  width: 200px;
+  height: 30px;
   display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+.now-level {
+  -webkit-user-select: none;
+  margin-left: 10px;
+  margin-right: 10px;
 }
 .level-btn__wrapper > i {
+  line-height: 50px;
   cursor: pointer;
 }
 .hidden {

@@ -10,6 +10,11 @@
       integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp"
       crossorigin="anonymous"
     />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Major+Mono+Display&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -22,8 +27,9 @@
         height="600"
       ></canvas>
       <div class="info__wrapper">
-        <div class="tetris__title">TETRIS</div>
+        <div class="tetris__title">tetRis</div>
         <div class="next-shape">
+          <div class="next-shape__title">Next Block</div>
           <canvas
             class="next__canvas"
             id="js-next__canvas"
@@ -32,17 +38,17 @@
           ></canvas>
         </div>
         <div class="score__wrapper">
-          <span>Score : </span>
+          <span>SCORE : </span>
           <span class="score" id="js-score">0</span>
-        </div>
-        <div class="btn__wrapper">
-          <button class="start__btn">PLAY</button>
-          <button class="reset__btn">RESET</button>
         </div>
         <div class="level-btn__wrapper">
           <i class="fas fa-angle-double-left level-down__btn"></i>
-          <div class="now-level">Lv1</div>
+          <div class="now-level">LV1</div>
           <i class="fas fa-angle-double-right level-up__btn"></i>
+        </div>
+        <div class="play-btn__wrapper">
+          <button class="start__btn">PLAY</button>
+          <button class="reset__btn">RESET</button>
         </div>
       </div>
     </div>

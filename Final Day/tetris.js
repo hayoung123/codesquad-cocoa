@@ -543,10 +543,22 @@ class TetrisView {
   levelUp() {
     this.tetrisModel.levelUp();
     this.level = this.tetrisModel.getLevel();
-    this.nowLevel.innerHTML = `Lv${this.level}`;
+    this.nowLevel.innerHTML = `LV${this.level}`;
   }
   levelDown() {
     this.tetrisModel.levelDown();
+    this.level = this.tetrisModel.getLevel();
+    this.nowLevel.innerHTML = `LV${this.level}`;
+  }
+  handleLevel({ target }) {
+    console.log("레벨조정");
+    const up = "level-up__btn";
+    if (target.classList[0] === up) {
+      console.log("레벨 업");
+      this.tetrisModel.levelUp();
+    } else {
+      this.tetrisModel.levelDown();
+    }
     this.level = this.tetrisModel.getLevel();
     this.nowLevel.innerHTML = `Lv${this.level}`;
   }
