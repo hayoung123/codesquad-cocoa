@@ -319,7 +319,7 @@ class TetrisView {
   }
   //check 게임 오버
   checkGameOver() {
-    for (let x of this.model[0]) {
+    for (let x of this.model[1]) {
       if (x !== 0) return true;
     }
     return false;
