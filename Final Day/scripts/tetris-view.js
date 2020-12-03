@@ -82,6 +82,7 @@ export class TetrisView {
     this.autoMove();
   }
   //check 게임 오버
+  //1번 index가 맨 윗줄이기 때문에 [1]
   checkGameOver() {
     for (let x of this.model[1]) {
       if (x !== 0) return true;
@@ -221,7 +222,7 @@ export class TetrisView {
   //Render next shape
   //nextShape는 항상 default block이 나오게 했다.
   renderNextBlock(color) {
-    const cellSize = this.nextCanvas.width / 6;
+    const cellSize = this.nextCanvas.width / 5;
     const startLeft =
       (this.nextCanvas.width - cellSize * this.nextShape.width) / 2;
     const startTop =
@@ -318,8 +319,3 @@ export class TetrisView {
     context.closePath();
   }
 }
-
-// TetrisModel : 가상의 테트리스 판(배열), 점수, 레벨(난이도)의 데이터를 관리
-// TetrisShape : block모양 data와 reboard에 사용될 colorList 관리
-// ScoreLevelView : 점수 , 레벨 관리
-// TetrisView : tetris게임 다음 모형 캔버스 까지 관리
