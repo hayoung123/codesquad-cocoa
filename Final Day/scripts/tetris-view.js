@@ -1,135 +1,4 @@
-class TetrisModel {
-  constructor() {
-    this.model = Array.from({ length: 21 }, () => new Array(10).fill(0));
-    this.score = 0;
-    this.level = 1;
-  }
-  getModel() {
-    return this.model;
-  }
-  resetModel() {
-    this.model = Array.from({ length: 21 }, () => new Array(10).fill(0));
-    return this.model;
-  }
-  addScore() {
-    this.score += 100;
-  }
-  getScore() {
-    return this.score;
-  }
-  resetScore() {
-    this.score = 0;
-  }
-  levelDown() {
-    if (this.level > 1) this.level -= 1;
-  }
-  levelUp() {
-    if (this.level < 10) this.level += 1;
-  }
-  getLevel() {
-    return this.level;
-  }
-}
-class TetrisShape {
-  constructor() {
-    // prettier-ignore
-    this.shape = [
-      {
-        id: 1,
-        name: "I",
-        width: 4,
-        height: 1,
-        color: "red",
-        location: [
-          [[0, 0],[1, 0],[2, 0],[3, 0]],
-          [[0, 0],[0, 1],[0, 2],[0, 3]],
-        ],
-      },
-      {
-        id: 2,
-        name: "O",
-        width: 2,
-        height: 2,
-        color: 'orange',
-        location: [
-          [[0, 0], [1, 0], [0, 1], [1, 1]],
-        ],
-      },
-      {
-        id: 3,
-        name: "T",
-        width: 3,
-        height: 2,
-        color: 'yellow',
-        location: [
-          [[1, 0],[0, 1],[1, 1],[2, 1]],
-          [[1, 0],[1, 1],[1, 2],[2, 1]],
-          [[0, 1],[1, 1],[1, 2],[2, 1]],
-          [[1, 0],[0, 1],[1, 1],[1, 2]],
-        ],
-      },
-      {
-        id: 4,
-        name: "L",
-        width: 2,
-        height: 3,
-        color: 'green',
-        location: [
-          [[0, 0],[0, 1],[0, 2],[1, 2]],
-          [[0, 0],[0, 1],[1, 0],[2, 0]],
-          [[0, 0],[1, 0],[1, 1],[1, 2]],
-          [[0, 1],[1, 1],[2, 1],[2, 0]],
-        ],
-      },
-      {
-        id: 5,
-        name: "J",
-        width: 2,
-        height: 3,
-        color: 'blue',
-        location: [
-          [[1, 0],[1, 1],[1, 2],[0, 2]],
-          [[0, 0],[0, 1],[1, 1],[2, 1]],
-          [[1, 0],[1, 1],[1, 2],[2, 0]],
-          [[0, 1],[1, 1],[2, 1],[2, 2]],
-        ],
-      },
-      {
-        id: 6,
-        name: "S",
-        width: 3,
-        height: 2,
-        color: 'navy',
-        location: [
-          [[1, 0],[2, 0],[0, 1],[1, 1]],
-          [[0, 0],[0, 1],[1, 1],[1, 2]],
-        ],
-      },
-      {
-        id: 7,
-        name: "Z",
-        width: 3,
-        height: 2,
-        color: 'purple',
-        location: [
-          [[0, 0],[1, 0],[1, 1],[2, 1]],
-          [[1, 0],[0, 1],[1, 1],[0, 2]],
-        ],
-      },
-    ];
-  }
-  getShapeList() {
-    return this.shape;
-  }
-  //시작 ID가 1이기 때문에 1번 index부터 시작하게 만들기
-  getColor() {
-    const colors = this.shape.map((v) => v.color);
-    const colorList = ["", ...colors];
-    return colorList;
-  }
-}
-
-class TetrisView {
+export class TetrisView {
   constructor({
     KEY,
     selector,
@@ -155,6 +24,7 @@ class TetrisView {
     this.nextShape;
     this.changeCnt = 0;
     this.cellSize = 30;
+    this.START_POINT = START_POINT;
     this.startLeft = START_POINT.LEFT;
     this.startTop = START_POINT.TOP;
     this.timer = null;
@@ -186,9 +56,10 @@ class TetrisView {
     } else {
       this.playBtn.disabled = true;
       document.addEventListener("keydown", this.handleKeydown);
-      this.play();
     }
+    this.play();
   }
+
   //새로운 블럭을 위해 초기화
   resetBlock() {
     cancelAnimationFrame(this.requestID);
@@ -196,8 +67,8 @@ class TetrisView {
     this.clear();
     this.clearNextShape();
     this.changeCnt = 0;
-    this.startLeft = START_POINT.LEFT;
-    this.startTop = START_POINT.TOP;
+    this.startLeft = this.START_POINT.LEFT;
+    this.startTop = this.START_POINT.TOP;
   }
   //새로운 블럭을 play하는것.
   play() {
@@ -448,86 +319,8 @@ class TetrisView {
     context.closePath();
   }
 }
-class ScoreLevelView {
-  constructor({ selector, tetrisModel }) {
-    this.tetrisModel = tetrisModel;
-    this.scoreScreen = selector.scoreScreen;
-    this.level = this.tetrisModel.getLevel();
-    this.nowLevel = selector.nowLevel;
-    selector.levelUpBtn.addEventListener("click", this.levelUp.bind(this));
-    selector.levelDownBtn.addEventListener("click", this.levelDown.bind(this));
-  }
 
-  updateScore() {
-    const score = this.tetrisModel.getScore();
-    this.scoreScreen.innerHTML = score;
-  }
-  getLevel() {
-    return this.level;
-  }
-  levelUp() {
-    this.tetrisModel.levelUp();
-    this.level = this.tetrisModel.getLevel();
-    this.nowLevel.innerHTML = `LV${this.level}`;
-  }
-  levelDown() {
-    this.tetrisModel.levelDown();
-    this.level = this.tetrisModel.getLevel();
-    this.nowLevel.innerHTML = `LV${this.level}`;
-  }
-}
-
-const START_POINT = {
-  LEFT: 90,
-  TOP: -30,
-};
-
-const $ = {
-  _(selector, base = document) {
-    return base.querySelector(selector);
-  },
-};
-
-const KEY = {
-  LEFT: 37,
-  UP: 38,
-  RIGHT: 39,
-  DOWN: 40,
-  SPACE: 32,
-};
-
-const selector = {
-  canvas: $._("#js-tetris__canvas"),
-  nextCanvas: $._("#js-next__canvas"),
-  playBtn: $._(".start__btn"),
-  resetBtn: $._(".reset__btn"),
-  gameover: $._(".gameover"),
-  nowLevel: $._(".now-level"),
-  levelDownBtn: $._(".level-down__btn"),
-  levelUpBtn: $._(".level-up__btn"),
-  scoreScreen: $._("#js-score"),
-};
-
-const tetrisModel = new TetrisModel();
-const shapeView = new TetrisShape();
-const scoreLevelView = new ScoreLevelView({ selector, tetrisModel });
-const tetris = new TetrisView({
-  KEY,
-  selector,
-  START_POINT,
-  tetrisModel,
-  shapeView,
-  scoreLevelView,
-});
-
-tetris.init();
-
-/*
-TetrisModel : 가상의 테트리스 판(배열), 점수, 레벨(난이도)의 데이터를 관리
-TetrisShape : block모양 data와 reboard에 사용될 colorList 관리
-ScoreLevelView : 점수 , 레벨 관리
-TetrisView : tetris게임 다음 모형 캔버스 까지 관리
-
-
-
-*/
+// TetrisModel : 가상의 테트리스 판(배열), 점수, 레벨(난이도)의 데이터를 관리
+// TetrisShape : block모양 data와 reboard에 사용될 colorList 관리
+// ScoreLevelView : 점수 , 레벨 관리
+// TetrisView : tetris게임 다음 모형 캔버스 까지 관리
