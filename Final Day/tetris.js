@@ -7,15 +7,15 @@ class TetrisModel {
   getModel() {
     return this.model;
   }
+  resetModel() {
+    this.model = Array.from({ length: 21 }, () => new Array(10).fill(0));
+    return this.model;
+  }
   addScore() {
     this.score += 100;
   }
   getScore() {
     return this.score;
-  }
-  resetModel() {
-    this.model = Array.from({ length: 21 }, () => new Array(10).fill(0));
-    return this.model;
   }
   resetScore() {
     this.score = 0;
@@ -42,6 +42,7 @@ class TetrisShape {
       "navy",
       "purple",
     ];
+    // prettier-ignore
     this.shape = [
       {
         id: 1,
@@ -49,18 +50,8 @@ class TetrisShape {
         width: 4,
         height: 1,
         location: [
-          [
-            [0, 0],
-            [1, 0],
-            [2, 0],
-            [3, 0],
-          ],
-          [
-            [0, 0],
-            [0, 1],
-            [0, 2],
-            [0, 3],
-          ],
+          [[0, 0],[1, 0],[2, 0],[3, 0]],
+          [[0, 0],[0, 1],[0, 2],[0, 3]],
         ],
       },
       {
@@ -69,12 +60,7 @@ class TetrisShape {
         width: 2,
         height: 2,
         location: [
-          [
-            [0, 0],
-            [1, 0],
-            [0, 1],
-            [1, 1],
-          ],
+          [[0, 0], [1, 0], [0, 1], [1, 1]],
         ],
       },
       {
@@ -83,30 +69,10 @@ class TetrisShape {
         width: 3,
         height: 2,
         location: [
-          [
-            [1, 0],
-            [0, 1],
-            [1, 1],
-            [2, 1],
-          ],
-          [
-            [1, 0],
-            [1, 1],
-            [1, 2],
-            [2, 1],
-          ],
-          [
-            [0, 1],
-            [1, 1],
-            [1, 2],
-            [2, 1],
-          ],
-          [
-            [1, 0],
-            [0, 1],
-            [1, 1],
-            [1, 2],
-          ],
+          [[1, 0],[0, 1],[1, 1],[2, 1]],
+          [[1, 0],[1, 1],[1, 2],[2, 1]],
+          [[0, 1],[1, 1],[1, 2],[2, 1]],
+          [[1, 0],[0, 1],[1, 1],[1, 2]],
         ],
       },
       {
@@ -115,30 +81,10 @@ class TetrisShape {
         width: 2,
         height: 3,
         location: [
-          [
-            [0, 0],
-            [0, 1],
-            [0, 2],
-            [1, 2],
-          ],
-          [
-            [0, 0],
-            [0, 1],
-            [1, 0],
-            [2, 0],
-          ],
-          [
-            [0, 0],
-            [1, 0],
-            [1, 1],
-            [1, 2],
-          ],
-          [
-            [0, 1],
-            [1, 1],
-            [2, 1],
-            [2, 0],
-          ],
+          [[0, 0],[0, 1],[0, 2],[1, 2]],
+          [[0, 0],[0, 1],[1, 0],[2, 0]],
+          [[0, 0],[1, 0],[1, 1],[1, 2]],
+          [[0, 1],[1, 1],[2, 1],[2, 0]],
         ],
       },
       {
@@ -147,30 +93,10 @@ class TetrisShape {
         width: 2,
         height: 3,
         location: [
-          [
-            [1, 0],
-            [1, 1],
-            [1, 2],
-            [0, 2],
-          ],
-          [
-            [0, 0],
-            [0, 1],
-            [1, 1],
-            [2, 1],
-          ],
-          [
-            [1, 0],
-            [1, 1],
-            [1, 2],
-            [2, 0],
-          ],
-          [
-            [0, 1],
-            [1, 1],
-            [2, 1],
-            [2, 2],
-          ],
+          [[1, 0],[1, 1],[1, 2],[0, 2]],
+          [[0, 0],[0, 1],[1, 1],[2, 1]],
+          [[1, 0],[1, 1],[1, 2],[2, 0]],
+          [[0, 1],[1, 1],[2, 1],[2, 2]],
         ],
       },
       {
@@ -179,18 +105,8 @@ class TetrisShape {
         width: 3,
         height: 2,
         location: [
-          [
-            [1, 0],
-            [2, 0],
-            [0, 1],
-            [1, 1],
-          ],
-          [
-            [0, 0],
-            [0, 1],
-            [1, 1],
-            [1, 2],
-          ],
+          [[1, 0],[2, 0],[0, 1],[1, 1]],
+          [[0, 0],[0, 1],[1, 1],[1, 2]],
         ],
       },
       {
@@ -199,18 +115,8 @@ class TetrisShape {
         width: 3,
         height: 2,
         location: [
-          [
-            [0, 0],
-            [1, 0],
-            [1, 1],
-            [2, 1],
-          ],
-          [
-            [1, 0],
-            [0, 1],
-            [1, 1],
-            [0, 2],
-          ],
+          [[0, 0],[1, 0],[1, 1],[2, 1]],
+          [[1, 0],[0, 1],[1, 1],[0, 2]],
         ],
       },
     ];
@@ -224,7 +130,7 @@ class TetrisShape {
 }
 
 class TetrisView {
-  constructor(KEY, selector, { tetrisModel, shapeView, scoreView }) {
+  constructor({ KEY, selector, tetrisModel, shapeView, scoreView }) {
     this.key = KEY;
     this.canvas = selector.canvas;
     this.context = this.canvas.getContext("2d");
@@ -238,6 +144,7 @@ class TetrisView {
     this.gameover = selector.gameover;
     this.tetrisModel = tetrisModel;
     this.model = tetrisModel.getModel();
+    this.level = this.tetrisModel.getLevel();
     this.shapeList = shapeView.getShape();
     this.colorList = shapeView.getColor();
     this.scoreView = scoreView;
@@ -249,7 +156,6 @@ class TetrisView {
     this.startTop = -30;
     this.timer = null;
     this.requestID = null;
-    this.level = this.tetrisModel.getLevel();
     this.handleKeydown = this.handleKeydown.bind(this);
   }
 
@@ -266,7 +172,7 @@ class TetrisView {
     this.nextShape = this.shapeList[random];
   }
 
-  //model reset, score&view reset
+  //model, score, view reset
   handleClick({ target }) {
     this.gameover.classList.add("hidden");
     this.model = this.tetrisModel.resetModel();
@@ -298,27 +204,12 @@ class TetrisView {
     this.changeCnt = 0;
     this.startLeft = 90;
     this.startTop = -30;
-    this.renderNextShape(this.colorList[this.nextShape.id]);
-    this.renderShape(this.colorList[this.shape.id]);
+    this.renderNextBlock(this.colorList[this.nextShape.id]);
+    this.renderBlock(this.colorList[this.shape.id]);
     if (this.checkGameOver()) {
       return this.finishPlay();
     }
     this.autoMove();
-  }
-
-  // 자동으로 내려가기
-  autoMove() {
-    const moveFast = 1000 - (this.level - 1) * 100;
-    if (this.checkBlock(this.startLeft, this.startTop + this.cellSize)) {
-      this.clear();
-      this.startTop += this.cellSize;
-      this.renderShape(this.colorList[this.shape.id]);
-      this.timer = setTimeout(this.autoMove.bind(this), moveFast);
-    } else {
-      this.fixBlock();
-      this.deleteLine();
-      this.play();
-    }
   }
   //check 게임 오버
   checkGameOver() {
@@ -331,6 +222,21 @@ class TetrisView {
   finishPlay() {
     document.removeEventListener("keydown", this.handleKeydown);
     this.gameover.classList.remove("hidden");
+  }
+
+  // 자동으로 내려가기
+  autoMove() {
+    const moveFast = 1000 - (this.level - 1) * 100;
+    if (this.checkBlock(this.startLeft, this.startTop + this.cellSize)) {
+      this.clear();
+      this.startTop += this.cellSize;
+      this.renderBlock(this.colorList[this.shape.id]);
+      this.timer = setTimeout(this.autoMove.bind(this), moveFast);
+    } else {
+      this.fixBlock();
+      this.deleteLine();
+      this.play();
+    }
   }
 
   //keyboard 이벤트
@@ -378,15 +284,15 @@ class TetrisView {
     } else if (keyCode === this.key.RIGHT) {
       this.startLeft += this.cellSize;
     }
-    this.renderShape(this.colorList[this.shape.id]);
+    this.renderBlock(this.colorList[this.shape.id]);
   }
 
-  //space바 누를 시 뚝떨어지는것
+  //space바 누를 시 drop
   drop() {
     if (this.checkBlock(this.startLeft, this.startTop + this.cellSize)) {
       this.clear();
       this.startTop += this.cellSize;
-      this.renderShape(this.colorList[this.shape.id]);
+      this.renderBlock(this.colorList[this.shape.id]);
       this.requestID = requestAnimationFrame(this.drop.bind(this));
     } else {
       this.fixBlock();
@@ -412,7 +318,7 @@ class TetrisView {
         this.changeCnt--;
       }
     }
-    this.renderShape(this.colorList[this.shape.id]);
+    this.renderBlock(this.colorList[this.shape.id]);
   }
 
   //충돌 check하기
@@ -432,17 +338,17 @@ class TetrisView {
   }
 
   //Render now shape - 게임 진행 화면
-  renderShape(color) {
+  renderBlock(color) {
     const nowIdx = this.changeCnt % this.shape.location.length;
     for (let x of this.shape.location[nowIdx]) {
       const left = this.startLeft + this.cellSize * x[0];
       const top = this.startTop + this.cellSize * x[1];
-      this.drawBox(this.context, left, top, color, this.cellSize);
+      this.renderBox(this.context, left, top, color, this.cellSize);
     }
   }
 
   //Render next shape
-  renderNextShape(color) {
+  renderNextBlock(color) {
     const size = this.nextCanvas.width / 6;
     const startLeft = (this.nextCanvas.width - size * this.nextShape.width) / 2;
     const startTop =
@@ -450,7 +356,7 @@ class TetrisView {
     for (let x of this.nextShape.location[0]) {
       const left = startLeft + size * x[0];
       const top = startTop + size * x[1];
-      this.drawBox(this.nextContext, left, top, color, size);
+      this.renderBox(this.nextContext, left, top, color, size);
     }
   }
 
@@ -517,7 +423,7 @@ class TetrisView {
       for (let j = 0; j < this.model[i].length; j++) {
         if (this.model[i][j] !== 0) {
           const color = this.colorList[this.model[i][j]];
-          this.drawBox(
+          this.renderBox(
             this.context,
             j * this.cellSize,
             (i - 1) * this.cellSize,
@@ -529,7 +435,7 @@ class TetrisView {
     }
   }
   // context에 size크기의 정사각형 그리기
-  drawBox(context, left, top, color, size) {
+  renderBox(context, left, top, color, size) {
     context.beginPath();
     context.fillStyle = color;
     context.lineWidth = 1.5;
@@ -604,7 +510,9 @@ const selector = {
 const tetrisModel = new TetrisModel();
 const shapeView = new TetrisShape();
 const scoreView = new ScoreView(selector, { tetrisModel });
-const tetris = new TetrisView(KEY, selector, {
+const tetris = new TetrisView({
+  KEY,
+  selector,
   tetrisModel,
   shapeView,
   scoreView,
