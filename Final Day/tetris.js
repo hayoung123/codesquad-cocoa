@@ -32,16 +32,6 @@ class TetrisModel {
 }
 class TetrisShape {
   constructor() {
-    this.colorList = [
-      "",
-      "red",
-      "orange",
-      "yellow",
-      "green",
-      "blue",
-      "navy",
-      "purple",
-    ];
     // prettier-ignore
     this.shape = [
       {
@@ -49,6 +39,7 @@ class TetrisShape {
         name: "I",
         width: 4,
         height: 1,
+        color: "red",
         location: [
           [[0, 0],[1, 0],[2, 0],[3, 0]],
           [[0, 0],[0, 1],[0, 2],[0, 3]],
@@ -59,6 +50,7 @@ class TetrisShape {
         name: "O",
         width: 2,
         height: 2,
+        color: 'orange',
         location: [
           [[0, 0], [1, 0], [0, 1], [1, 1]],
         ],
@@ -68,6 +60,7 @@ class TetrisShape {
         name: "T",
         width: 3,
         height: 2,
+        color: 'yellow',
         location: [
           [[1, 0],[0, 1],[1, 1],[2, 1]],
           [[1, 0],[1, 1],[1, 2],[2, 1]],
@@ -80,6 +73,7 @@ class TetrisShape {
         name: "L",
         width: 2,
         height: 3,
+        color: 'green',
         location: [
           [[0, 0],[0, 1],[0, 2],[1, 2]],
           [[0, 0],[0, 1],[1, 0],[2, 0]],
@@ -92,6 +86,7 @@ class TetrisShape {
         name: "J",
         width: 2,
         height: 3,
+        color: 'blue',
         location: [
           [[1, 0],[1, 1],[1, 2],[0, 2]],
           [[0, 0],[0, 1],[1, 1],[2, 1]],
@@ -104,6 +99,7 @@ class TetrisShape {
         name: "S",
         width: 3,
         height: 2,
+        color: 'navy',
         location: [
           [[1, 0],[2, 0],[0, 1],[1, 1]],
           [[0, 0],[0, 1],[1, 1],[1, 2]],
@@ -114,6 +110,7 @@ class TetrisShape {
         name: "Z",
         width: 3,
         height: 2,
+        color: 'purple',
         location: [
           [[0, 0],[1, 0],[1, 1],[2, 1]],
           [[1, 0],[0, 1],[1, 1],[0, 2]],
@@ -121,16 +118,19 @@ class TetrisShape {
       },
     ];
   }
-  getShape() {
+  getShapeList() {
     return this.shape;
   }
+  //시작 ID가 1이기 때문에 1번 index부터 시작하게 만들기
   getColor() {
-    return this.colorList;
+    const colors = this.shape.map((v) => v.color);
+    const colorList = ["", ...colors];
+    return colorList;
   }
 }
 
 class TetrisView {
-  constructor({ KEY, selector, tetrisModel, shapeView, scoreView }) {
+  constructor({ KEY, selector, tetrisModel, shapeView, scoreLevelView }) {
     this.key = KEY;
     this.canvas = selector.canvas;
     this.context = this.canvas.getContext("2d");
@@ -138,16 +138,12 @@ class TetrisView {
     this.nextContext = this.nextCanvas.getContext("2d");
     this.playBtn = selector.playBtn;
     this.resetBtn = selector.resetBtn;
-    this.nowLevel = selector.nowLevel;
-    this.levelDownBtn = selector.levelDownBtn;
-    this.levelUpBtn = selector.levelUpBtn;
     this.gameover = selector.gameover;
     this.tetrisModel = tetrisModel;
     this.model = tetrisModel.getModel();
-    this.level = this.tetrisModel.getLevel();
-    this.shapeList = shapeView.getShape();
+    this.shapeList = shapeView.getShapeList();
     this.colorList = shapeView.getColor();
-    this.scoreView = scoreView;
+    this.scoreLevelView = scoreLevelView;
     this.shape;
     this.nextShape;
     this.changeCnt = 0;
@@ -164,8 +160,6 @@ class TetrisView {
     this.setNextShape();
     this.playBtn.addEventListener("click", this.handleClick.bind(this));
     this.resetBtn.addEventListener("click", this.handleClick.bind(this));
-    this.levelUpBtn.addEventListener("click", this.levelUp.bind(this));
-    this.levelDownBtn.addEventListener("click", this.levelDown.bind(this));
   }
   setNextShape() {
     const random = Math.floor(Math.random() * 7);
@@ -177,7 +171,7 @@ class TetrisView {
     this.gameover.classList.add("hidden");
     this.model = this.tetrisModel.resetModel();
     this.tetrisModel.resetScore();
-    this.scoreView.updateScore();
+    this.scoreLevelView.updateScore();
     this.clear();
     this.clearNextShape();
     if (target.innerHTML === "RESET") {
@@ -226,7 +220,8 @@ class TetrisView {
 
   // 자동으로 내려가기
   autoMove() {
-    const moveFast = 1000 - (this.level - 1) * 100;
+    const level = this.scoreLevelView.getLevel();
+    const moveFast = 1000 - (level - 1) * 100;
     if (this.checkBlock(this.startLeft, this.startTop + this.cellSize)) {
       this.clear();
       this.startTop += this.cellSize;
@@ -340,24 +335,25 @@ class TetrisView {
   //Render now shape - 게임 진행 화면
   renderBlock(color) {
     const nowIdx = this.changeCnt % this.shape.location.length;
-    for (let x of this.shape.location[nowIdx]) {
-      const left = this.startLeft + this.cellSize * x[0];
-      const top = this.startTop + this.cellSize * x[1];
+    this.shape.location[nowIdx].forEach((size) => {
+      const left = this.startLeft + this.cellSize * size[0];
+      const top = this.startTop + this.cellSize * size[1];
       this.renderBox(this.context, left, top, color, this.cellSize);
-    }
+    });
   }
 
   //Render next shape
   renderNextBlock(color) {
-    const size = this.nextCanvas.width / 6;
+    const cellSize = this.nextCanvas.width / 6;
     const startLeft = (this.nextCanvas.width - size * this.nextShape.width) / 2;
     const startTop =
       (this.nextCanvas.height - size * this.nextShape.height) / 2;
-    for (let x of this.nextShape.location[0]) {
-      const left = startLeft + size * x[0];
-      const top = startTop + size * x[1];
-      this.renderBox(this.nextContext, left, top, color, size);
-    }
+    //next에는 default block이기 때문에 0번 index
+    this.nextShape.location[0].forEach((size) => {
+      const left = startLeft + cellSize * size[0];
+      const top = startTop + cellSize * size[1];
+      this.renderBox(this.nextContext, left, top, color, cellSize);
+    });
   }
 
   //tetris 격자판
@@ -365,10 +361,10 @@ class TetrisView {
     const canvasWidth = this.canvas.width;
     const canvasHeight = this.canvas.height;
     this.context.lineWidth = 0.3;
-    for (let i = 1; i < 10; i++) {
+    for (let i = 1; i < canvasWidth / this.cellSize; i++) {
       this.drawLine(this.cellSize * i, 0, this.cellSize * i, canvasHeight);
     }
-    for (let i = 1; i < 20; i++) {
+    for (let i = 1; i < canvasHeight / this.cellSize; i++) {
       this.drawLine(0, this.cellSize * i, canvasWidth, this.cellSize * i);
     }
   }
@@ -382,15 +378,15 @@ class TetrisView {
   }
   //한줄 지우기
   deleteLine() {
-    for (let i = 0; i < this.model.length; i++) {
-      if (!this.model[i].includes(0)) {
-        this.model.splice(i, 1);
+    this.model.forEach((line, idx) => {
+      if (!line.includes(0)) {
+        this.model.splice(idx, 1);
         const newArray = new Array(10).fill(0);
         this.model.unshift(newArray);
         this.tetrisModel.addScore();
-        this.scoreView.updateScore();
+        this.scoreLevelView.updateScore();
       }
-    }
+    });
   }
   //화면 재구성
   clear() {
@@ -410,11 +406,11 @@ class TetrisView {
   //모델에 block저장
   fixBlock() {
     const nowIdx = this.changeCnt % this.shape.location.length;
-    for (let x of this.shape.location[nowIdx]) {
-      const left = this.startLeft + this.cellSize * x[0];
-      const top = this.startTop + this.cellSize * x[1];
+    this.shape.location[nowIdx].forEach((v) => {
+      const left = this.startLeft + this.cellSize * v[0];
+      const top = this.startTop + this.cellSize * v[1];
       this.model[top / this.cellSize + 1][left / this.cellSize] = this.shape.id;
-    }
+    });
   }
 
   //model에 따라서 쌓인 블럭들 그리기
@@ -444,8 +440,26 @@ class TetrisView {
     context.stroke();
     context.closePath();
   }
+}
+class ScoreLevelView {
+  constructor({ selector, tetrisModel }) {
+    this.tetrisModel = tetrisModel;
+    this.scoreScreen = selector.scoreScreen;
+    this.level = this.tetrisModel.getLevel();
+    this.nowLevel = selector.nowLevel;
+    this.levelDownBtn = selector.levelDownBtn;
+    this.levelUpBtn = selector.levelUpBtn;
+    this.levelUpBtn.addEventListener("click", this.levelUp.bind(this));
+    this.levelDownBtn.addEventListener("click", this.levelDown.bind(this));
+  }
 
-  //level 조절하기
+  updateScore() {
+    const score = this.tetrisModel.getScore();
+    this.scoreScreen.innerHTML = score;
+  }
+  getLevel() {
+    return this.level;
+  }
   levelUp() {
     this.tetrisModel.levelUp();
     this.level = this.tetrisModel.getLevel();
@@ -455,29 +469,6 @@ class TetrisView {
     this.tetrisModel.levelDown();
     this.level = this.tetrisModel.getLevel();
     this.nowLevel.innerHTML = `LV${this.level}`;
-  }
-  handleLevel({ target }) {
-    console.log("레벨조정");
-    const up = "level-up__btn";
-    if (target.classList[0] === up) {
-      console.log("레벨 업");
-      this.tetrisModel.levelUp();
-    } else {
-      this.tetrisModel.levelDown();
-    }
-    this.level = this.tetrisModel.getLevel();
-    this.nowLevel.innerHTML = `Lv${this.level}`;
-  }
-}
-
-class ScoreView {
-  constructor(selector, { tetrisModel }) {
-    this.score = tetrisModel;
-    this.scoreScreen = selector.scoreScreen;
-  }
-  updateScore() {
-    const score = this.score.getScore();
-    this.scoreScreen.innerHTML = score;
   }
 }
 
@@ -509,13 +500,21 @@ const selector = {
 
 const tetrisModel = new TetrisModel();
 const shapeView = new TetrisShape();
-const scoreView = new ScoreView(selector, { tetrisModel });
+const scoreLevelView = new ScoreLevelView({ selector, tetrisModel });
 const tetris = new TetrisView({
   KEY,
   selector,
   tetrisModel,
   shapeView,
-  scoreView,
+  scoreLevelView,
 });
 
 tetris.init();
+
+/*
+TetrisModel : 가상의 테트리스 판(배열), 점수, 레벨(난이도)의 데이터를 관리
+TetrisShape : block모양 data와 reboard에 사용될 colorList 관리
+ScoreLevelView : 점수판 관리
+TetrisView :
+
+*/
