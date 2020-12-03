@@ -172,32 +172,30 @@ class TetrisView {
     this.model = this.tetrisModel.resetModel();
     this.tetrisModel.resetScore();
     this.scoreLevelView.updateScore();
-    this.clear();
-    this.clearNextShape();
     if (target.innerHTML === "RESET") {
-      cancelAnimationFrame(this.requestID);
-      clearTimeout(this.timer);
-      this.timer = null;
-      this.requestID = null;
-      this.setNextShape();
+      this.resetBlock();
       this.playBtn.disabled = false;
       document.removeEventListener("keydown", this.handleKeydown);
     } else {
-      document.addEventListener("keydown", this.handleKeydown);
       this.playBtn.disabled = true;
+      document.addEventListener("keydown", this.handleKeydown);
       this.play();
     }
   }
-  play() {
+  //새로운 블럭을 위해 초기화
+  resetBlock() {
     cancelAnimationFrame(this.requestID);
     clearTimeout(this.timer);
     this.clear();
-    this.shape = this.nextShape;
     this.clearNextShape();
-    this.setNextShape();
     this.changeCnt = 0;
     this.startLeft = 90;
     this.startTop = -30;
+    this.setNextShape();
+  }
+  play() {
+    this.resetBlock();
+    this.shape = this.nextShape;
     this.renderNextBlock(this.colorList[this.nextShape.id]);
     this.renderBlock(this.colorList[this.shape.id]);
     if (this.checkGameOver()) {
@@ -345,9 +343,10 @@ class TetrisView {
   //Render next shape
   renderNextBlock(color) {
     const cellSize = this.nextCanvas.width / 6;
-    const startLeft = (this.nextCanvas.width - size * this.nextShape.width) / 2;
+    const startLeft =
+      (this.nextCanvas.width - cellSize * this.nextShape.width) / 2;
     const startTop =
-      (this.nextCanvas.height - size * this.nextShape.height) / 2;
+      (this.nextCanvas.height - cellSize * this.nextShape.height) / 2;
     //next에는 default block이기 때문에 0번 index
     this.nextShape.location[0].forEach((size) => {
       const left = startLeft + cellSize * size[0];
@@ -514,7 +513,9 @@ tetris.init();
 /*
 TetrisModel : 가상의 테트리스 판(배열), 점수, 레벨(난이도)의 데이터를 관리
 TetrisShape : block모양 data와 reboard에 사용될 colorList 관리
-ScoreLevelView : 점수판 관리
-TetrisView :
+ScoreLevelView : 점수 , 레벨 관리
+TetrisView : tetris게임 다음 모형 캔버스 까지 관리
+
+
 
 */
