@@ -56,10 +56,9 @@ export class TetrisView {
     } else {
       this.playBtn.disabled = true;
       document.addEventListener("keydown", this.handleKeydown);
+      this.play();
     }
-    this.play();
   }
-
   //새로운 블럭을 위해 초기화
   resetBlock() {
     cancelAnimationFrame(this.requestID);
