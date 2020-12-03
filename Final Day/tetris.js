@@ -130,7 +130,14 @@ class TetrisShape {
 }
 
 class TetrisView {
-  constructor({ KEY, selector, tetrisModel, shapeView, scoreLevelView }) {
+  constructor({
+    KEY,
+    selector,
+    START_POINT,
+    tetrisModel,
+    shapeView,
+    scoreLevelView,
+  }) {
     this.key = KEY;
     this.canvas = selector.canvas;
     this.context = this.canvas.getContext("2d");
@@ -148,8 +155,8 @@ class TetrisView {
     this.nextShape;
     this.changeCnt = 0;
     this.cellSize = 30;
-    this.startLeft = 90;
-    this.startTop = -30;
+    this.startLeft = START_POINT.LEFT;
+    this.startTop = START_POINT.TOP;
     this.timer = null;
     this.requestID = null;
     this.handleKeydown = this.handleKeydown.bind(this);
@@ -189,13 +196,14 @@ class TetrisView {
     this.clear();
     this.clearNextShape();
     this.changeCnt = 0;
-    this.startLeft = 90;
-    this.startTop = -30;
-    this.setNextShape();
+    this.startLeft = START_POINT.LEFT;
+    this.startTop = START_POINT.TOP;
   }
+  //새로운 블럭을 play하는것.
   play() {
     this.resetBlock();
     this.shape = this.nextShape;
+    this.setNextShape();
     this.renderNextBlock(this.colorList[this.nextShape.id]);
     this.renderBlock(this.colorList[this.shape.id]);
     if (this.checkGameOver()) {
@@ -305,7 +313,7 @@ class TetrisView {
         this.checkBlock(this.startLeft + this.cellSize, this.startTop)
       ) {
         this.startLeft += this.cellSize;
-      } else if (this.shape.id === 1) {
+      } else if (this.shape.name === "I") {
         this.startLeft -= this.cellSize * (this.shape.width - 1);
       } else {
         this.changeCnt--;
@@ -317,9 +325,9 @@ class TetrisView {
   //충돌 check하기
   checkBlock(startLeft, startTop) {
     const nowIdx = this.changeCnt % this.shape.location.length;
-    for (let x of this.shape.location[nowIdx]) {
-      const left = startLeft + this.cellSize * x[0];
-      const top = startTop + this.cellSize * x[1];
+    for (let size of this.shape.location[nowIdx]) {
+      const left = startLeft + this.cellSize * size[0];
+      const top = startTop + this.cellSize * size[1];
       if (top >= this.canvas.height) {
         return false;
       }
@@ -341,13 +349,13 @@ class TetrisView {
   }
 
   //Render next shape
+  //nextShape는 항상 default block이 나오게 했다.
   renderNextBlock(color) {
     const cellSize = this.nextCanvas.width / 6;
     const startLeft =
       (this.nextCanvas.width - cellSize * this.nextShape.width) / 2;
     const startTop =
       (this.nextCanvas.height - cellSize * this.nextShape.height) / 2;
-    //next에는 default block이기 때문에 0번 index
     this.nextShape.location[0].forEach((size) => {
       const left = startLeft + cellSize * size[0];
       const top = startTop + cellSize * size[1];
@@ -446,10 +454,8 @@ class ScoreLevelView {
     this.scoreScreen = selector.scoreScreen;
     this.level = this.tetrisModel.getLevel();
     this.nowLevel = selector.nowLevel;
-    this.levelDownBtn = selector.levelDownBtn;
-    this.levelUpBtn = selector.levelUpBtn;
-    this.levelUpBtn.addEventListener("click", this.levelUp.bind(this));
-    this.levelDownBtn.addEventListener("click", this.levelDown.bind(this));
+    selector.levelUpBtn.addEventListener("click", this.levelUp.bind(this));
+    selector.levelDownBtn.addEventListener("click", this.levelDown.bind(this));
   }
 
   updateScore() {
@@ -470,6 +476,11 @@ class ScoreLevelView {
     this.nowLevel.innerHTML = `LV${this.level}`;
   }
 }
+
+const START_POINT = {
+  LEFT: 90,
+  TOP: -30,
+};
 
 const $ = {
   _(selector, base = document) {
@@ -503,6 +514,7 @@ const scoreLevelView = new ScoreLevelView({ selector, tetrisModel });
 const tetris = new TetrisView({
   KEY,
   selector,
+  START_POINT,
   tetrisModel,
   shapeView,
   scoreLevelView,

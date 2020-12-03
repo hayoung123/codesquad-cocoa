@@ -30,12 +30,13 @@ html {
 }
 .gameover {
   position: absolute;
-  background-color: black;
+  background-color: rgba(0, 0, 0, 0.7);
   color: red;
   top: 250px;
   width: 300px;
   height: 50px;
-  border: 2px solid black;
+  border: 2px solid rgba(0, 0, 0, 0.7);
+  background-clip: padding-box;
   font-size: 27px;
   display: flex;
   align-items: center;
