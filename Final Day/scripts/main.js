@@ -1,6 +1,6 @@
 import { TetrisModel } from "./tetris-model.js";
 import { ScoreLevelView } from "./score-level-view.js";
-import { TetrisShape } from "./tetris-shape.js";
+import { TetrisShapeModel } from "./tetris-shape.js";
 import { TetrisView } from "./tetris-view.js";
 
 const START_POINT = {
@@ -35,14 +35,14 @@ const selector = {
 };
 
 const tetrisModel = new TetrisModel();
-const shapeView = new TetrisShape();
+const shapeModel = new TetrisShapeModel();
 const scoreLevelView = new ScoreLevelView({ selector, tetrisModel });
 const tetris = new TetrisView({
   KEY,
   selector,
   START_POINT,
   tetrisModel,
-  shapeView,
+  shapeModel,
   scoreLevelView,
 });
 
@@ -50,7 +50,7 @@ tetris.init();
 
 /*
 TetrisModel : 가상의 테트리스 판(배열), 점수, 레벨(난이도)의 데이터를 관리
-TetrisShape : block모양 data와 reboard에 사용될 colorList 관리
+TetrisShapeModel : block모양 data와 reboard()에 사용될 colorList 관리
 ScoreLevelView : 점수 , 레벨 관리
 TetrisView : tetris 게임 canvas, 다음 모형 canvas 관리
 

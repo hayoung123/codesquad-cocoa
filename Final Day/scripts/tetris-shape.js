@@ -1,4 +1,4 @@
-export class TetrisShape {
+export class TetrisShapeModel {
   constructor() {
     // prettier-ignore
     this.shape = [

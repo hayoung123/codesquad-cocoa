@@ -4,7 +4,7 @@ export class TetrisView {
     selector,
     START_POINT,
     tetrisModel,
-    shapeView,
+    shapeModel,
     scoreLevelView,
   }) {
     this.key = KEY;
@@ -19,7 +19,7 @@ export class TetrisView {
     this.model = tetrisModel.getModel();
     //메소드에서 class 생성 때 받은 파라미터를 직접 못쓰기 때문에 따로 저장
     this.scoreLevelView = scoreLevelView;
-    this.shapeView = shapeView;
+    this.shapeModel = shapeModel;
     this.START_POINT = START_POINT;
     this.startLeft = START_POINT.LEFT;
     this.startTop = START_POINT.TOP;
@@ -41,7 +41,7 @@ export class TetrisView {
   }
   //random으로 next 블록 설정
   setNextShape() {
-    const shapeList = this.shapeView.getShapeList();
+    const shapeList = this.shapeModel.getShapeList();
     const random = Math.floor(Math.random() * 7);
     this.nextShape = shapeList[random];
   }
@@ -300,7 +300,7 @@ export class TetrisView {
 
   //model에 따라서 쌓인 블럭들 그리기
   reScreen() {
-    const colorList = this.shapeView.getColor();
+    const colorList = this.shapeModel.getColor();
     for (let top = 1; top < this.model.length; top++) {
       this.model[top].forEach((cell, left) => {
         if (cell !== 0) {
