@@ -301,19 +301,19 @@ export class TetrisView {
   //model에 따라서 쌓인 블럭들 그리기
   reScreen() {
     const colorList = this.shapeView.getColor();
-    for (let i = 1; i < this.model.length; i++) {
-      for (let j = 0; j < this.model[i].length; j++) {
-        if (this.model[i][j] !== 0) {
-          const color = colorList[this.model[i][j]];
+    for (let top = 1; top < this.model.length; top++) {
+      this.model[top].forEach((cell, left) => {
+        if (cell !== 0) {
+          const color = colorList[cell];
           this.renderBox(
             this.context,
-            j * this.cellSize,
-            (i - 1) * this.cellSize,
+            left * this.cellSize,
+            (top - 1) * this.cellSize,
             color,
             this.cellSize
           );
         }
-      }
+      });
     }
   }
   // context에 size크기의 정사각형 그리기
