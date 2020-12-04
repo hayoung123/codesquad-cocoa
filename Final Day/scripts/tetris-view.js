@@ -133,33 +133,37 @@ export class TetrisView {
   //움직이기
   move(keyCode) {
     if (keyCode === this.key.DOWN) {
-      if (this.checkBlock(this.startLeft, this.startTop + this.cellSize)) {
-        this.moveBlock(keyCode);
-      } else {
-        this.fixBlock();
-        this.deleteLine();
-        this.play();
-      }
+      this.moveDown();
     } else if (keyCode === this.key.LEFT) {
-      if (this.checkBlock(this.startLeft - this.cellSize, this.startTop)) {
-        this.moveBlock(keyCode);
-      }
+      this.moveLeft();
     } else if (keyCode === this.key.RIGHT) {
-      if (this.checkBlock(this.startLeft + this.cellSize, this.startTop)) {
-        this.moveBlock(keyCode);
-      }
+      this.moveRight();
     }
   }
-  moveBlock(keyCode) {
-    this.clear();
-    if (keyCode === this.key.DOWN) {
+  moveDown() {
+    if (this.checkBlock(this.startLeft, this.startTop + this.cellSize)) {
+      this.clear();
       this.startTop += this.cellSize;
-    } else if (keyCode === this.key.LEFT) {
-      this.startLeft -= this.cellSize;
-    } else if (keyCode === this.key.RIGHT) {
-      this.startLeft += this.cellSize;
+      this.renderBlock(this.shape.color);
+    } else {
+      this.fixBlock();
+      this.deleteLine();
+      this.play();
     }
-    this.renderBlock(this.shape.color);
+  }
+  moveLeft() {
+    if (this.checkBlock(this.startLeft - this.cellSize, this.startTop)) {
+      this.clear();
+      this.startLeft -= this.cellSize;
+      this.renderBlock(this.shape.color);
+    }
+  }
+  moveRight() {
+    if (this.checkBlock(this.startLeft + this.cellSize, this.startTop)) {
+      this.clear();
+      this.startLeft += this.cellSize;
+      this.renderBlock(this.shape.color);
+    }
   }
 
   //space바 누를 시 drop
