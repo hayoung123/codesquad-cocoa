@@ -74,3 +74,57 @@ next shape도 테트리스 게임의 일부라고 생각 해서 TetrisView에 �
 
 - next shape view : block모형 데이터에(`TetrisShapeModel`) default 모양의 width, height를 작성해 놓고 이용했다.
   - next canvas의 넓이와 next shape의 가로, 세로 길이를 비교해 `start-left`,`top`을 설정해 중앙에 위치하게 해주었다.
+
+---
+
+## 프로젝트 때 힘들었던? 에러
+
+### addEventListener , removeEventListener
+
+`addEventListener` 와 `removeEventListener`를 사용할 때 똑같은 이벤트에 똑같은 콜백함수를 적어주어야 그 이벤트가 정확하게 사라지게 된다.
+
+하지만 class에서 `addEventListener`를 사용하게 되면 this가 event의 트리거가된 element에 바인딩 되기 때문에 콜백함수를 `bind`함수로 바인딩해 작성했었다.
+
+이 과정에서 `callbackFn.bind(this)`를 하게 된다면, bind함수가 this로 바인딩한 새로운 함수를 만들어 내는 것이기 때문에 아래와 같이 작성해주어도 callback함수는 서로 다른 callback함수를 가르키게 된다.
+
+```javascript
+element.addEventListener("click", callbackFn.bind(this));
+element.removeEventListener("click", callbackFn.bind(this));
+```
+
+> 해결방법
+>
+> 나는 constructor의 property에 `this.callback = this.callbackFn.bind(this)`
+> 이런식으로 바인딩해 this.callback 이 자체를 콜백함수에 넣어주었다.
+
+</br>
+
+### class의 argument와 메소드에서의 활용
+
+class에서 argument로 START_POINT를 받아와서 사용했다. 하지만 메소드 안에서 START_POINT를 바로 활용하려 했는데 활용이 되지 않았다.
+
+> 해결방법
+>
+> this.START_POINT = START_POINT 로 constructor의 프로퍼티로 작성해서 활용했다.
+
+간단하게 해결됐던 문제였지만, 인자를 메소드에서 직접적으로 사용못한다는 점을 배웠다.
+
+</br>
+
+### import, export
+
+아직까지 이것이 해결된 정확한 이유는 알지 못한다.
+
+일단, import,export를 사용했다. html의 script에서 `type='module'` 속성을 주게 되면 사용할 수 있었다.
+
+나는 프로젝트를 로컬 환경에서 실행하고 확인하였는데 import, export를 사용하고 로컬 환경에서 실행하니 **CORS policy error** 가 발생하였다. 간단하게 프로토콜, 호스트, 포트가 다르면 안되는 브라우저 보안 방침이다. local에서 실행했기 때문에 당연히 null이므로 에러가 발생하는 것이었다.
+
+// 다음에 CORS policy 와 SOP 에 대해서 자세히 알아 볼 것이다.
+
+아무튼! 구글에서 간단한 해결법을 찾았다. http-server을 npm에서 install해 사용하면 된다는 것이었는데... 또 다른 에러가 계속 발생해 해결하지 못했다.
+
+그래서 코드스쿼드 동료분들에게 도움을 요청했는데 다들 너무 잘 도와주셔서 vsc의 extension중 live server을 이용해서 실행해보니 한번에 해결됐다!
+
+해결원리는 아직 잘모른다... 이 부분에 대해서는 앞으로도 자주 마주칠 문제일 것 같으니 자세하게 공부해 보는 것이 좋을 것 같다!
+
+---
