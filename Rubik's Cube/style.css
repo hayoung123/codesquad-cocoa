@@ -1,4 +1,76 @@
+.wrapper {
+  margin-left: 30px;
+  margin-top: 30px;
+}
+.cube__title {
+  font-size: 30px;
+  margin-bottom: 20px;
+}
 .cube__canvas {
   border: 1px solid black;
   padding: 20px;
+}
+.cube-control__container {
+  width: 600px;
+}
+.control__btn,
+.control-reverse__btn {
+  width: 640px;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+.control__btn > div,
+.control-reverse__btn > div {
+  width: 100px;
+  height: 30px;
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 17px;
+  line-height: 30px;
+  cursor: pointer;
+}
+.control__btn > div:hover,
+.control-reverse__btn > div:hover,
+.cube-control__form > button:hover,
+.cube-commands > div:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.cube-control__form {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+}
+.cube-control__form > input {
+  padding: 5px;
+}
+.cube-control__form > button {
+  width: 60px;
+  margin-left: 5px;
+  padding: 4px;
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.cube-commands {
+  margin-top: 10px;
+  display: flex;
+}
+
+.cube-commands > div {
+  width: 100px;
+  height: 30px;
+  margin-right: 10px;
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 17px;
+  line-height: 30px;
+  cursor: pointer;
 }
