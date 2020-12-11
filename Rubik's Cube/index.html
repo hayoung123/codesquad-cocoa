@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rubiks Cube</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="cube__title">Rubik's Cube</div>
+    <canvas
+      class="cube__canvas"
+      id="js-cube__canvas"
+      width="600"
+      height="450"
+    ></canvas>
+    <div class="cube-control__container">
+      <div class="btn__container">
+        <div class="control__btn">
+          <button>U</button>
+          <button>D</button>
+          <button>L</button>
+          <button>F</button>
+          <button>R</button>
+          <button>B</button>
+        </div>
+        <div class="control-reverse__btn">
+          <button>U'</button>
+          <button>D'</button>
+          <button>L'</button>
+          <button>F'</button>
+          <button>R'</button>
+          <button>B'</button>
+        </div>
+      </div>
+      <form class="cube-control__form" onsubmit="return false">
+        <input type="text" name="input" placeholder="큐브돌리기(R3L')" />
+        <button>입력!</button>
+      </form>
+      <div class="cube-commands">
+        <button>shuffle</button>
+        <button>Reset</button>
+      </div>
+    </div>
+    <script src="cube.js"></script>
+  </body>
+</html>
