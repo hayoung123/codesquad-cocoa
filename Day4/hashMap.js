@@ -12,7 +12,7 @@ class HashTable {
   }
   hash(str) {
     const hashKey = str
-      .split("")
+      .split('')
       .reduce((acc, curr) => acc + curr.charCodeAt(), 0);
     return hashKey % this.hashSize;
   }
@@ -66,7 +66,7 @@ class HashTable {
   }
   get(stringKey) {
     if (this.findNode(stringKey)) return this.findNode(stringKey).value;
-    else console.log("no data");
+    else console.log('no data');
   }
   replace(stringKey, stringValue) {
     if (this.findNode(stringKey)) {
@@ -74,7 +74,7 @@ class HashTable {
       node.key = stringKey;
       node.value = stringValue;
     } else {
-      console.log("no data");
+      console.log('no data');
     }
   }
   isEmpty() {
@@ -101,19 +101,20 @@ class HashTable {
 }
 
 let a = new HashTable();
-a.put("kyle", "hello");
-a.put("cho", "possible");
-a.put("cho", "possible1");
-a.put("ohc", "cho reverse");
-a.put("song", "song");
-a.remove("ohc");
-console.log(a.keys());
-console.log(a.containsKey("kyle"););
-console.log(a.get("kyle"));
-console.log(a.get("kyl"));
-a.replace("kyle", "welcome");
-console.log(a.findNode("kyle"));
-console.log(a.keys());
-console.log(a.keys());
-console.log(a.size());
-console.log(a.isEmpty());
+a.put('kyle', 'hello');
+a.put('cho', 'possible');
+a.put('cho', 'possible1');
+a.put('ohc', 'cho reverse');
+a.put('song', 'song');
+console.dir(a, { depth: null });
+// a.remove('ohc');
+// console.log(a.keys());
+// console.log(a.containsKey('kyle'));
+// console.log(a.get('kyle'));
+// console.log(a.get('kyl'));
+// a.replace('kyle', 'welcome');
+// console.log(a.findNode('kyle'));
+// console.log(a.keys());
+// console.log(a.keys());
+// console.log(a.size());
+// console.log(a.isEmpty());

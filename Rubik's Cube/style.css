@@ -7,8 +7,9 @@
   margin-bottom: 20px;
 }
 .cube__canvas {
-  border: 1px solid black;
+  background-color: #929292;
   padding: 20px;
+  transition: all 1s;
 }
 .cube-control__container {
   width: 600px;
